@@ -1,0 +1,12 @@
+{
+  "name": "pixel-wars-core",
+  "version": "3.0.0",
+  "description": "The core of PIXEL WARS 3",
+  "license": "GPL-3.0-only",
+  "author": "C0mplexity0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

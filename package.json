@@ -1,0 +1,19 @@
+{
+  "name": "pixel-wars-3",
+  "version": "3.0.0",
+  "description": "A pixel-based game",
+  "homepage": "https://github.com/C0mplexity0/pixel-wars-3#readme",
+  "bugs": {
+    "url": "https://github.com/C0mplexity0/pixel-wars-3/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C0mplexity0/pixel-wars-3.git"
+  },
+  "license": "GPL-3.0-only",
+  "author": "C0mplexity0",
+  "type": "module",
+  "main": "",
+  "scripts": {},
+  "workspaces": ["packages/pixel-wars-client", "packages/pixel-wars-core"]
+}
