@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import "./App.css"
 import GameUi from "./GameUi"
-import logoBlack from "./assets/img/pixel-wars-black.png"
+import logoBlack from "./assets/img/pixel-wars-black.webp"
 import PixelatedImg from "./components/PixelatedImg"
 import AnimatedImgButton from "./components/AnimatedImgButton"
-import singleplayerButtonDefault from "./assets/img/singleplayer-button-default.png"
-import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spritesheet.png"
-import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.png"
-import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.png"
+import singleplayerButtonDefault from "./assets/img/singleplayer-button-default.webp"
+import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spritesheet.webp"
+import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.webp"
+import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.webp"
 import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
 
 function Menu() {
