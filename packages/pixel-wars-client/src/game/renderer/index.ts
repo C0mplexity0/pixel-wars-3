@@ -38,7 +38,13 @@ export default class Renderer {
   }
 
   #renderPixel(x: number, y: number, scale: number, id: number) {
-    this.ctx.fillStyle = PIXEL_COLOURS[id]
+    const colour = PIXEL_COLOURS[id]
+
+    if (!colour || colour === "#ffffff") {
+      return
+    }
+
+    this.ctx.fillStyle = colour
     const canvasPos = this.getCanvasPosFromPixelPos(x, y, scale)
     this.ctx.fillRect(canvasPos[0] - Math.floor(scale/2), canvasPos[1] - Math.floor(scale/2), scale, scale)
   }
