@@ -12,6 +12,9 @@ export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, ti
   const [hoverCount, setHoverCount] = useState(0)
   const [frame, setFrame] = useState(0)
 
+  const preloadImg = new Image()
+  preloadImg.src = spritesheetImgSrc // Preload spritesheet
+
   const imgSrc = hovered ? spritesheetImgSrc : defaultImgSrc
 
   useEffect(() => {
