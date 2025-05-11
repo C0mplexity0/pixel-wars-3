@@ -9,8 +9,6 @@ export function getClient() {
 }
 
 export function initGame() {
-  console.log(core)
-  console.log(client)
   if (core && client)
     return
 
