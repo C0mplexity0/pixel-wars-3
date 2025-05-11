@@ -50,6 +50,7 @@ export default class LocalPlayer implements NonPixelRenderer {
     if (singleplayerCore) {
       singleplayerCore.getPlayers()[0].setSelectedColour(colour)
       this.selectedColour = colour
+      this.onColourInventoryUpdatedEvent.fire(this.colourInventory, this.selectedColour)
     }
   }
 
