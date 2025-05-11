@@ -1,0 +1,3 @@
+# PIXEL WARS CORE
+
+This is the core logic for PIXEL WARS. This includes handling worlds and players. The pixel-wars-core module is designed to run on either the client or the server, and is designed to work the same way on both. When in singleplayer, the client uses an instance of the core to handle game logic, and when on multiplayer, the server uses an instance of the core to handle game logic, and then communicates any relevant information to the clients connected to it.
