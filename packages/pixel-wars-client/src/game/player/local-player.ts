@@ -1,3 +1,4 @@
+import PixelWarsEvent from "pixel-wars-core/event";
 import type PixelWarsClient from "..";
 import type Renderer from "../renderer";
 import type { NonPixelRenderer } from "../renderer";
@@ -13,6 +14,8 @@ export default class LocalPlayer implements NonPixelRenderer {
   private colourInventory: number[]
   private selectedColour: number
 
+  private onColourInventoryUpdatedEvent: PixelWarsEvent
+
   constructor(client: PixelWarsClient) {
     this.colourId = 0
     
@@ -20,6 +23,8 @@ export default class LocalPlayer implements NonPixelRenderer {
 
     this.colourInventory = []
     this.selectedColour = 0
+
+    this.onColourInventoryUpdatedEvent = new PixelWarsEvent()
 
     this.client = client
     
@@ -67,6 +72,14 @@ export default class LocalPlayer implements NonPixelRenderer {
     if (singleplayerCore) {
       singleplayerCore.getPlayers()[0].setPosition(x, y)
     }
+  }
+
+  onColourInventoryUpdated(callback: (colourInventory: number[], selectedColour: number) => void) {
+    this.onColourInventoryUpdatedEvent.addListener(callback)
+  }
+
+  offColourInventoryUpdated(callback: (colourInventory: number[], selectedColour: number) => void) {
+    this.onColourInventoryUpdatedEvent.removeListener(callback)
   }
 
   render(renderer: Renderer, scale: number) {

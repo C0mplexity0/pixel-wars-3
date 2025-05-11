@@ -1,12 +1,11 @@
 import "./App.css"
+import GameUi from "./GameUi"
 
-function App() {
 
+export default function App() {
   return (
-    <main>
-
+    <main className="size-full">
+      <GameUi />
     </main>
   )
 }
-
-export default App

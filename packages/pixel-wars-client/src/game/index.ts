@@ -11,6 +11,8 @@ import Player from "pixel-wars-core/player"
 export default class PixelWarsClient {
   private pixelWarsCore?: PixelWarsCore
 
+  private debugModeEnabled: boolean
+
   private renderer: Renderer
   private world: ClientWorld
   private player: LocalPlayer
@@ -21,6 +23,7 @@ export default class PixelWarsClient {
   private lastUpdate: number
 
   private onUpdateEvent: PixelWarsEvent
+  private onDebugModeToggleEvent: PixelWarsEvent
 
   constructor(canvas: HTMLCanvasElement, pixelWarsCore?: PixelWarsCore) {
     console.info("STARTING PIXEL WARS CLIENT")
@@ -30,6 +33,8 @@ export default class PixelWarsClient {
     if (pixelWarsCore) {
       pixelWarsCore.addPlayer(new Player(pixelWarsCore))
     }
+
+    this.debugModeEnabled = false
 
     this.renderer = new Renderer(canvas)
     this.world = new ClientWorld(this)
@@ -42,10 +47,19 @@ export default class PixelWarsClient {
     this.lastUpdate = Date.now()
 
     this.onUpdateEvent = new PixelWarsEvent()
+    this.onDebugModeToggleEvent = new PixelWarsEvent()
+
+    window.addEventListener("keyup", (event) => {
+      if (event.key.toLowerCase() === "d" && event.ctrlKey && event.altKey) {
+        event.preventDefault()
+        this.debugModeEnabled = !this.debugModeEnabled
+        this.onDebugModeToggleEvent.fire(this.debugModeEnabled)
+      }
+    })
 
     setTimeout(() => {
       this.#update()
-    }, 1000/60)
+    }, 0)
   }
 
   #getRegionForRendering() {
@@ -77,7 +91,7 @@ export default class PixelWarsClient {
 
     setTimeout(() => {
       this.#update()
-    }, 1000/60)
+    }, 0)
   }
 
   onUpdate(callback: (deltaTime: number) => void) {
@@ -113,5 +127,17 @@ export default class PixelWarsClient {
 
   getSingleplayerCore() {
     return this.pixelWarsCore
+  }
+
+  onDebugModeToggle(callback: (debugMode: boolean) => void) {
+    this.onDebugModeToggleEvent.addListener(callback)
+  }
+
+  offDebugModeToggle(callback: (debugMode: boolean) => void) {
+    this.onDebugModeToggleEvent.removeListener(callback)
+  }
+
+  inDebugMode() {
+    return this.debugModeEnabled
   }
 }
