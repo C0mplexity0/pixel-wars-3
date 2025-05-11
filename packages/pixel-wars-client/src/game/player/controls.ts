@@ -1,3 +1,5 @@
+import PixelWarsEvent from "pixel-wars-core/event"
+
 const KEYBINDS: {[key: string]: string} = {
   "ARROWUP": "UP",
   "W": "UP",
@@ -16,17 +18,22 @@ const KEYBINDS: {[key: string]: string} = {
 
 export default class ControlsHandler {
   private pressedKeys: string[]
-  private keyUpListeners: ((keyType?: string) => void)[]
+
+  private onKeyUpEvent: PixelWarsEvent
+  private onKeyDownEvent: PixelWarsEvent
 
   constructor() {
     this.pressedKeys = []
-    this.keyUpListeners = []
+
+    this.onKeyUpEvent = new PixelWarsEvent()
+    this.onKeyDownEvent = new PixelWarsEvent()
 
     document.addEventListener("keydown", (event) => {
       const key = event.key.toUpperCase()
 
       if (!this.pressedKeys.includes(key)) {
         this.pressedKeys.push(key)
+        this.onKeyDownEvent.fire(KEYBINDS[key])
       }
     })
 
@@ -37,18 +44,24 @@ export default class ControlsHandler {
       if (i >= 0)
         this.pressedKeys.splice(i, 1)
 
-      this.#callListeners(this.keyUpListeners, KEYBINDS[key])
+      this.onKeyUpEvent.fire(KEYBINDS[key])
     })
   }
 
-  #callListeners(callbacks: ((keyType?: string) => void)[], keyType?: string) {
-    for (let i=0;i<callbacks.length;i++) {
-      callbacks[i](keyType)
-    }
+  onKeyUp(callback: (keyType?: string) => void) {
+    this.onKeyUpEvent.addListener(callback)
   }
 
-  onKeyUp(callback: (keyType?: string) => void) {
-    this.keyUpListeners.push(callback)
+  offKeyUp(callback: (keyType?: string) => void) {
+    this.onKeyUpEvent.removeListener(callback)
+  }
+
+  onKeyDown(callback: (keyType?: string) => void) {
+    this.onKeyDownEvent.addListener(callback)
+  }
+
+  offKeyDown(callback: (keyType?: string) => void) {
+    this.onKeyDownEvent.removeListener(callback)
   }
 
   getPressedKeys() {
