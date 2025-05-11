@@ -5,9 +5,10 @@ interface AnimatedImgButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   defaultImgSrc: string,
   spritesheetImgSrc: string,
   timings: number[],
+  alt?: string,
 }
 
-export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, timings, className, ...props }: AnimatedImgButtonProps) {
+export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, timings, alt, className, ...props }: AnimatedImgButtonProps) {
   const [hovered, setHovered] = useState(false)
   const [hoverCount, setHoverCount] = useState(0)
   const [frame, setFrame] = useState(0)
@@ -53,6 +54,7 @@ export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, ti
       {...props}
     >
       <img 
+        alt={alt}
         src={imgSrc}
         className="h-full absolute top-0 cursor-pointer block max-w-max"
 

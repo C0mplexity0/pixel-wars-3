@@ -14,13 +14,15 @@ function Menu() {
   return (
     <div className="size-full flex items-center justify-center">
       <div className="w-200 flex flex-col items-center justify-center gap-2">
-        <PixelatedImg className="w-100 pb-8" src={logoBlack} />
+        <PixelatedImg className="w-100 pb-8" src={logoBlack} alt="PIXEL WARS Logo" />
 
         <AnimatedImgButton 
           defaultImgSrc={singleplayerButtonDefault}
           spritesheetImgSrc={singleplayerButtonSpritesheet}
           timings={[100, 300, 250, 100, 100, 300, 450, 300, 400, 250, 500, 300, 300, 350, 350, 250, 300, 400, 350, 2500]}
           className="w-[504px] h-[72px]"
+          alt="Singleplayer Button Image"
+          aria-label="Singleplayer Button"
           onClick={() => {
             initSingleplayer()
           }}
@@ -31,6 +33,8 @@ function Menu() {
           spritesheetImgSrc={multiplayerButtonSpritesheet}
           timings={[100, 400, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 125, 150, 150, 150, 125, 150, 150, 100, 100, 100, 2500]}
           className="w-[504px] h-[72px]"
+          alt="Multiplayer Button Image"
+          aria-label="Multiplayer Button"
           onClick={() => {
             
           }}
