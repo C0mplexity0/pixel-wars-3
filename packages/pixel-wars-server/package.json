@@ -1,0 +1,10 @@
+{
+  "name": "pixel-wars-server",
+  "version": "3.0.0",
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "C0mplexity",
+  "license": "GPL-3.0-only",
+  "type": "module"
+}

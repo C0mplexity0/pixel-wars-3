@@ -15,5 +15,9 @@
   "type": "module",
   "main": "",
   "scripts": {},
-  "workspaces": ["packages/pixel-wars-client", "packages/pixel-wars-core"]
+  "workspaces": [
+    "packages/pixel-wars-client", 
+    "packages/pixel-wars-core", 
+    "packages/pixel-wars-server"
+  ]
 }

@@ -1,0 +1,17 @@
+{
+  "name": "pixel-wars-server-example",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npm run tsc && node out/index.js",
+    "tsc": "tsc --project ."
+  },
+  "keywords": [],
+  "author": "C0mplexity",
+  "license": "CC0-1.0",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
