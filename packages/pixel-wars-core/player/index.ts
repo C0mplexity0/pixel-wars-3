@@ -1,6 +1,12 @@
 import type PixelWarsCore from ".."
 import PixelWarsEvent from "../event"
-import World, { PIXEL_COLOURS } from "../world"
+import World from "../world"
+
+export const PLAYER_COLOURS = [
+  "#ff0000",
+  "#00ff00",
+  "#0000ff"
+]
 
 export default class Player {
   protected position: number[]
@@ -15,13 +21,13 @@ export default class Player {
 
   constructor(core: PixelWarsCore) {
     this.position = [0, 0]
-    this.colourId = Math.floor(Math.random() * (PIXEL_COLOURS.length - 1)) + 1
+    this.colourId = Math.floor(Math.random() * PLAYER_COLOURS.length)
 
     this.world = core.getDefaultWorld()
 
     this.onWorldChangeEvent = new PixelWarsEvent()
 
-    this.colourInventory = [1, 2, 3, 4]
+    this.colourInventory = [1, 2]
     this.selectedColour = 0
 
     this.onColourInventoryUpdatedEvent = new PixelWarsEvent()

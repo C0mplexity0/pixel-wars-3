@@ -13,6 +13,8 @@ export default class PixelWarsClient {
 
   private debugModeEnabled: boolean
 
+  private canvas: HTMLCanvasElement
+
   private renderer: Renderer
   private world: ClientWorld
   private player: LocalPlayer
@@ -35,8 +37,10 @@ export default class PixelWarsClient {
     }
 
     this.debugModeEnabled = false
+    
+    this.canvas = canvas
 
-    this.renderer = new Renderer(canvas)
+    this.renderer = new Renderer(this)
     this.world = new ClientWorld(this)
     this.player = new LocalPlayer(this)
 
@@ -70,7 +74,7 @@ export default class PixelWarsClient {
     for (let y=-VISIBLE_PIXEL_RADIUS;y<VISIBLE_PIXEL_RADIUS;y++) {
       const row = []
       for (let x=-VISIBLE_PIXEL_RADIUS;x<VISIBLE_PIXEL_RADIUS;x++) {
-        row.push(this.world.getPixel(centre[0] + x, centre[1] + y).colour)
+        row.push(this.world.getPixel(centre[0] + x, centre[1] + y).typeId)
       }
       region.push(row)
     }
@@ -104,6 +108,10 @@ export default class PixelWarsClient {
 
   getRenderer() {
     return this.renderer
+  }
+
+  getCanvas() {
+    return this.canvas
   }
 
   getClientWorld() {

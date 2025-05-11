@@ -1,20 +1,23 @@
-import { PIXEL_COLOURS } from "pixel-wars-core/world"
+import type PixelWarsClient from "..";
 
 export const VISIBLE_PIXEL_RADIUS = 25
 
 export default class Renderer {
+  private client: PixelWarsClient
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas
-    const ctx = canvas.getContext("2d")
+  constructor(client: PixelWarsClient) {
+    this.client = client
+    this.canvas = client.getCanvas()
+    const ctx = this.canvas.getContext("2d")
 
     if (!ctx) {
       throw new Error("Could not get canvas context 2d")
     }
 
     this.ctx = ctx
+    ctx.imageSmoothingEnabled = false
   }
 
   getCanvas() {
@@ -38,15 +41,26 @@ export default class Renderer {
   }
 
   #renderPixel(x: number, y: number, scale: number, id: number) {
-    const colour = PIXEL_COLOURS[id]
+    const pixelTypes = this.client.getClientWorld().getPixelTypes()
+    const pixelType = pixelTypes[id]
 
-    if (!colour || colour === "#ffffff") {
-      return
-    }
-
-    this.ctx.fillStyle = colour
     const canvasPos = this.getCanvasPosFromPixelPos(x, y, scale)
-    this.ctx.fillRect(canvasPos[0] - Math.floor(scale/2), canvasPos[1] - Math.floor(scale/2), scale, scale)
+
+    if (pixelType.texture) {
+      const img = this.client.getClientWorld().loadTexture(pixelType.texture)
+      img.src = pixelType.texture
+
+      this.ctx.drawImage(img, canvasPos[0] - Math.floor(scale/2), canvasPos[1] - Math.floor(scale/2), scale, scale)
+    } else {
+      const colour = pixelType.colour
+
+      if (!colour || colour === "#ffffff") {
+        return
+      }
+
+      this.ctx.fillStyle = colour
+      this.ctx.fillRect(canvasPos[0] - Math.floor(scale/2), canvasPos[1] - Math.floor(scale/2), scale, scale)
+    }
   }
 
   #renderPixels(pixels: number[][]) {

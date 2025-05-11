@@ -1,26 +1,35 @@
 import WorldUtils from "./utils"
 
-export const PIXEL_COLOURS = [
-  "#ffffff",
-  "#000000",
-  "#ff0000",
-  "#00ff00",
-  "#0000ff"
-]
-
 export const CHUNK_SIZE = 16
 
 export interface WorldPixel {
-  colour: number,
+  typeId: number,
   playerCanWalk?: boolean,
   buildingDisabled?: boolean,
 }
 
+export interface PixelType {
+  colour: string,
+  texture?: string
+}
+
 export default class World {
   private world: {[coordinates: string]: WorldPixel[][]};
+  private pixelTypes: PixelType[]
   
   constructor() {
     this.world = {}
+    this.pixelTypes = [
+      {
+        colour: "#ffffff"
+      },
+      {
+        colour: "#000000"
+      },
+      {
+        colour: "#ff0000"
+      }
+    ]
   }
 
   #generateNewChunk(x: number, y: number) {
@@ -30,7 +39,7 @@ export default class World {
 
     if (x === 0 && y === 0) {
       chunk[0][0] = {
-        colour: 0,
+        typeId: 0,
         playerCanWalk: true
       }
     }
@@ -63,5 +72,9 @@ export default class World {
     const [xInChunk, yInChunk] = WorldUtils.getPosInChunkFromPixelPos(x, y)
 
     this.world[WorldUtils.getChunkId(chunkX, chunkY)][yInChunk][xInChunk] = pixel
+  }
+
+  getPixelTypes() {
+    return this.pixelTypes
   }
 }

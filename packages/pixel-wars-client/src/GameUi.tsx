@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Debug from "./debug/Debug";
 import { getClient } from "./main";
-import { PIXEL_COLOURS } from "pixel-wars-core/world";
 
 function Inventory() {
   const game = getClient()
@@ -24,10 +23,19 @@ function Inventory() {
   return (
     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-primary flex flex-row gap-2 p-2">
       {colours.map((value, i) => {
+        const pixelInfo = game.getClientWorld().getPixelTypes()
+        const pixelType = pixelInfo[value]
+
+        let isTexture = false
+
+        if (pixelType.texture) {
+          isTexture = true
+        }
+
         return <button 
           className={`size-8 cursor-pointer ${selectedColour === i ? "scale-110" : ""}`} 
           key={i} 
-          style={{backgroundColor: PIXEL_COLOURS[value]}}
+          style={isTexture ? { backgroundImage: `url(${pixelType.texture})`, backgroundSize: "100% 100%", imageRendering: "pixelated" } : { backgroundColor: pixelType.colour }}
           onClick={() => {
             game.getPlayer().setSelectedColour(i)
           }}

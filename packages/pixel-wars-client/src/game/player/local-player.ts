@@ -2,7 +2,7 @@ import PixelWarsEvent from "pixel-wars-core/event";
 import type PixelWarsClient from "..";
 import type Renderer from "../renderer";
 import type { NonPixelRenderer } from "../renderer";
-import { PIXEL_COLOURS } from "pixel-wars-core/world";
+import { PLAYER_COLOURS } from "pixel-wars-core/player";
 
 export default class LocalPlayer implements NonPixelRenderer {
   private client: PixelWarsClient
@@ -90,7 +90,7 @@ export default class LocalPlayer implements NonPixelRenderer {
     const y = renderer.getCanvas().height / 2
 
     const ctx = renderer.getContext()
-    ctx.fillStyle = PIXEL_COLOURS[this.colourId]
+    ctx.fillStyle = PLAYER_COLOURS[this.colourId]
     ctx.fillRect(x - size/2, y - size/2, size, size)
   }
 }

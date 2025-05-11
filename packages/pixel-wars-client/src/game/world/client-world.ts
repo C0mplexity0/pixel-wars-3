@@ -5,10 +5,12 @@ import type PixelWarsClient from "..";
 export default class ClientWorld {
   private world: {[coordinates: string]: WorldPixel[][]}
   private client: PixelWarsClient
+  private textureCache: {[url: string]: HTMLImageElement}
 
   constructor(client: PixelWarsClient) {
     this.world = {}
     this.client = client
+    this.textureCache = {}
   }
 
   #loadChunk(x: number, y: number) {
@@ -50,5 +52,26 @@ export default class ClientWorld {
     if (singleplayerCore) {
       singleplayerCore.getPlayers()[0].getWorld().setPixel(x, y, pixel)
     }
+  }
+
+  getPixelTypes() {
+    const singleplayerCore = this.client.getSingleplayerCore()
+
+    if (singleplayerCore) {
+      return singleplayerCore.getPlayers()[0].getWorld().getPixelTypes()
+    }
+
+    return []
+  }
+
+  loadTexture(texture: string) {
+    if (this.textureCache[texture]) {
+      return this.textureCache[texture]
+    }
+
+    const img = new Image()
+    img.src = texture
+    this.textureCache[texture] = img
+    return img
   }
 }

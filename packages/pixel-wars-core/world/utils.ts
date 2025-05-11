@@ -34,7 +34,7 @@ export default class WorldUtils {
       const row = []
       for (let x=0;x<CHUNK_SIZE;x++) {
         row.push({
-          colour: 0,
+          typeId: 0,
           playerCanWalk: true
         })
       }
