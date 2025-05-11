@@ -6,7 +6,8 @@
 
 @font-face {
   font-family: PIXELWARS;
-  src: url(font/PIXEL-WARS.ttf);
+  src: local("PIXEL-WARS"),
+  url("./assets/font/PIXEL-WARS.ttf");
 }
 
 html, body {
