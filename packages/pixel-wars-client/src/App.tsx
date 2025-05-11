@@ -6,13 +6,15 @@ import PixelatedImg from "./components/PixelatedImg"
 import AnimatedImgButton from "./components/AnimatedImgButton"
 import singleplayerButtonDefault from "./assets/img/singleplayer-button-default.png"
 import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spritesheet.png"
+import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.png"
+import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.png"
 import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
 
 function Menu() {
   return (
     <div className="size-full flex items-center justify-center">
-      <div className="w-200 flex flex-col items-center justify-center">
-        <PixelatedImg className="w-100 p-8 m-2" src={logoBlack} />
+      <div className="w-200 flex flex-col items-center justify-center gap-2">
+        <PixelatedImg className="w-100 pb-8" src={logoBlack} />
 
         <AnimatedImgButton 
           defaultImgSrc={singleplayerButtonDefault}
@@ -24,7 +26,15 @@ function Menu() {
           }}
         />
 
-        <span className="p-3">Multiplayer coming soon</span>
+        <AnimatedImgButton 
+          defaultImgSrc={multiplayerButtonDefault}
+          spritesheetImgSrc={multiplayerButtonSpritesheet}
+          timings={[100, 400, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 125, 150, 150, 150, 125, 150, 150, 100, 100, 100, 2500]}
+          className="w-[504px] h-[72px]"
+          onClick={() => {
+            
+          }}
+        />
       </div>
     </div>
   )
