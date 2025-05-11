@@ -1,7 +1,7 @@
 {
   "name": "pixel-wars-3",
   "version": "3.0.0",
-  "description": "A pixel-based game",
+  "description": "A simple open-source pixel-based browser game with multiplayer and modding support.",
   "homepage": "https://github.com/C0mplexity0/pixel-wars-3#readme",
   "bugs": {
     "url": "https://github.com/C0mplexity0/pixel-wars-3/issues"

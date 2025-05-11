@@ -1,7 +1,7 @@
 {
   "name": "pixel-wars-server",
   "version": "3.0.0",
-  "description": "",
+  "description": "A simple open-source pixel-based browser game with multiplayer and modding support.",
   "scripts": {},
   "keywords": [],
   "author": "C0mplexity",

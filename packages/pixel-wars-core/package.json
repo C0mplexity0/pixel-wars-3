@@ -1,7 +1,7 @@
 {
   "name": "pixel-wars-core",
   "version": "3.0.0",
-  "description": "The core of PIXEL WARS 3",
+  "description": "A simple open-source pixel-based browser game with multiplayer and modding support.",
   "license": "GPL-3.0-only",
   "author": "C0mplexity0",
   "type": "module",

@@ -3,6 +3,7 @@
   "private": true,
   "version": "3.0.0",
   "type": "module",
+  "description": "A simple open-source pixel-based browser game with multiplayer and modding support.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
