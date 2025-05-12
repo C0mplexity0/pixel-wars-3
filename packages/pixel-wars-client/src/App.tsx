@@ -12,33 +12,43 @@ import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from
 
 function Menu() {
   return (
-    <div className="size-full flex items-center justify-center">
-      <div className="w-200 flex flex-col items-center justify-center gap-2">
-        <PixelatedImg className="w-100 pb-8" src={logoBlack} alt="PIXEL WARS Logo" />
+    <div className="size-full">
+      <div className="size-full absolute flex items-center justify-center">
+        <div className="w-200 flex flex-col items-center justify-center gap-2">
+          <PixelatedImg className="w-100 pb-8" src={logoBlack} alt="PIXEL WARS Logo" />
 
-        <AnimatedImgButton 
-          defaultImgSrc={singleplayerButtonDefault}
-          spritesheetImgSrc={singleplayerButtonSpritesheet}
-          timings={[100, 300, 250, 100, 100, 300, 450, 300, 400, 250, 500, 300, 300, 350, 350, 250, 300, 400, 350, 2500]}
-          className="w-[504px] h-[72px]"
-          alt="Singleplayer Button Image"
-          aria-label="Singleplayer Button"
-          onClick={() => {
-            initSingleplayer()
-          }}
-        />
+          <AnimatedImgButton 
+            defaultImgSrc={singleplayerButtonDefault}
+            spritesheetImgSrc={singleplayerButtonSpritesheet}
+            timings={[100, 300, 250, 100, 100, 300, 450, 300, 400, 250, 500, 300, 300, 350, 350, 250, 300, 400, 350, 2500]}
+            className="w-[504px] h-[72px]"
+            alt="Singleplayer Button Image"
+            aria-label="Singleplayer Button"
+            onClick={() => {
+              initSingleplayer()
+            }}
+          />
 
-        <AnimatedImgButton 
-          defaultImgSrc={multiplayerButtonDefault}
-          spritesheetImgSrc={multiplayerButtonSpritesheet}
-          timings={[100, 400, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 125, 150, 150, 150, 125, 150, 150, 100, 100, 100, 2500]}
-          className="w-[504px] h-[72px]"
-          alt="Multiplayer Button Image"
-          aria-label="Multiplayer Button"
-          onClick={() => {
-            
-          }}
-        />
+          <AnimatedImgButton 
+            defaultImgSrc={multiplayerButtonDefault}
+            spritesheetImgSrc={multiplayerButtonSpritesheet}
+            timings={[100, 400, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 125, 150, 150, 150, 125, 150, 150, 100, 100, 100, 2500]}
+            className="w-[504px] h-[72px]"
+            alt="Multiplayer Button Image"
+            aria-label="Multiplayer Button"
+            onClick={() => {
+              
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="absolute bottom-2 left-2">
+        <a 
+          href="https://c0mplexity.com" 
+          target="_blank"
+          className="underline"
+        >By C0mplexity</a>
       </div>
     </div>
   )
