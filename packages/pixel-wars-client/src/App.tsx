@@ -11,13 +11,42 @@ import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-sprite
 import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
 import Input from "./components/ui/Input"
 import Button from "./components/ui/Button"
+import AnimatedImg from "./components/AnimatedImg"
+import loadingSpritesheet from "./assets/img/loading.png"
 
 function MultiplayerMenu() {
+  const [loading, setLoading] = useState(false)
+
   return (
     <div className="flex flex-col text-center w-75">
-      <label htmlFor="address">Enter Server IP</label>
-      <Input name="address" id="address" type="text" placeholder="example.com" />
-      <Button className="mt-2">Connect</Button>
+      {
+        loading ?
+        <div className="size-full flex flex-col justify-center items-center gap-4">
+          <AnimatedImg
+            spritesheetImgSrc={loadingSpritesheet}
+            timings={[100, 100, 100, 100, 100, 100, 100, 100]}
+            className="w-12 h-12"
+            alt="Loading spinner"
+          />
+          <span>Connecting to server</span>
+          <Button
+            className="w-full"
+            onClick={() => {
+              setLoading(false)
+            }}
+          >Cancel</Button>
+        </div> :
+        <>
+          <label htmlFor="address">Enter Server IP</label>
+          <Input name="address" id="address" type="text" placeholder="example.com" />
+          <Button 
+            className="mt-2"
+            onClick={() => {
+              setLoading(true)
+            }}
+          >Connect</Button>
+        </>
+      }
     </div>
   )
 }
