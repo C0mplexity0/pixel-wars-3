@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: oklch(0.26 0 143)
+  --color-primary: oklch(0.26 0 143);
+  --color-button-hovered: oklch(0.92 0.0927 96.47);
 }
 
 @font-face {

@@ -10,12 +10,14 @@ import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.we
 import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.webp"
 import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
 import Input from "./components/ui/Input"
+import Button from "./components/ui/Button"
 
 function MultiplayerMenu() {
   return (
-    <div className="flex flex-col text-center">
+    <div className="flex flex-col text-center w-75">
       <label htmlFor="address">Enter Server IP</label>
       <Input name="address" id="address" type="text" placeholder="example.com" />
+      <Button className="mt-2">Connect</Button>
     </div>
   )
 }
@@ -99,7 +101,7 @@ export default function App() {
   })
 
   return (
-    <main className="size-full">
+    <main className="size-full" style={{imageRendering: "pixelated"}}>
       {
         gameRunning ?
         <GameUi />
