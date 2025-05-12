@@ -12,9 +12,6 @@ interface AnimatedImgButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
 export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, timings, alt, className, ...props }: AnimatedImgButtonProps) {
   const [hovered, setHovered] = useState(false)
 
-  const preloadImg = new Image()
-  preloadImg.src = spritesheetImgSrc // Preload spritesheet
-
   const onHover = () => {
     setHovered(true)
   }
@@ -37,20 +34,20 @@ export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, ti
 
       {...props}
     >
-      {
-        hovered ?
-        <AnimatedImg
-          alt={alt} 
-          spritesheetImgSrc={spritesheetImgSrc} 
-          timings={timings}
-          className="size-full"
-        /> :
-        <img 
-          alt={alt}
-          src={defaultImgSrc}
-          className="h-full absolute top-0 cursor-pointer block max-w-max"
-        />
-      }
+      <AnimatedImg
+        alt={alt} 
+        spritesheetImgSrc={spritesheetImgSrc} 
+        timings={timings}
+        className="size-full"
+        style={{opacity: hovered ? "1" : "0"}}
+        playing={hovered}
+      />
+      <img 
+        alt={alt}
+        src={defaultImgSrc}
+        className="h-full absolute top-0 cursor-pointer block max-w-max"
+        style={{opacity: hovered ? "0" : "1"}}
+      />
     </button>
   )
 }

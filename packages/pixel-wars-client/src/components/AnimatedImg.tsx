@@ -5,12 +5,18 @@ interface AnimatedImgProps extends React.HTMLAttributes<HTMLDivElement> {
   spritesheetImgSrc: string,
   timings: number[],
   alt?: string,
+  playing?: boolean
 }
 
-export default function AnimatedImg({ spritesheetImgSrc, timings, alt, className, ...props }: AnimatedImgProps) {
+export default function AnimatedImg({ spritesheetImgSrc, timings, alt, className, playing=true, ...props }: AnimatedImgProps) {
   const [frame, setFrame] = useState(0)
 
   useEffect(() => {
+    if (!playing) {
+      setFrame(0)
+      return
+    }
+
     let nextFrame = frame + 1
 
     if (!timings[nextFrame])
@@ -23,7 +29,7 @@ export default function AnimatedImg({ spritesheetImgSrc, timings, alt, className
     return () => {
       clearTimeout(timeout)
     }
-  })
+  }, [frame, playing, timings])
   
   return (
     <div className={twMerge("relative overflow-hidden", className)} {...props}>
