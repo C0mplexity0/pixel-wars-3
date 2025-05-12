@@ -9,12 +9,37 @@ import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spri
 import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.webp"
 import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.webp"
 import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
+import Input from "./components/ui/Input"
+
+function MultiplayerMenu() {
+  return (
+    <div className="flex flex-col text-center">
+      <label htmlFor="address">Enter Server IP</label>
+      <Input name="address" id="address" type="text" placeholder="example.com" />
+    </div>
+  )
+}
 
 function Menu() {
+  const [multiplayerMenuOpen, setMultiplayerMenuOpen] = useState(false)
+
   return (
     <div className="size-full">
+      {
+        multiplayerMenuOpen ?
+        <button 
+          className="absolute z-2 top-2 left-2 cursor-pointer"
+          onClick={() => {
+            setMultiplayerMenuOpen(false)
+          }}
+        >Back to Menu</button>
+        : null
+      }
       <div className="size-full absolute flex items-center justify-center">
-        <div className="w-200 flex flex-col items-center justify-center gap-2">
+        {
+          multiplayerMenuOpen ?
+          <MultiplayerMenu /> :
+          <div className="w-200 flex flex-col items-center justify-center gap-2">
           <PixelatedImg className="w-100 pb-8" src={logoBlack} alt="PIXEL WARS Logo" />
 
           <AnimatedImgButton 
@@ -37,10 +62,11 @@ function Menu() {
             alt="Multiplayer Button Image"
             aria-label="Multiplayer Button"
             onClick={() => {
-              
+              setMultiplayerMenuOpen(true)
             }}
           />
         </div>
+        }
       </div>
 
       <div className="absolute bottom-2 left-2">
