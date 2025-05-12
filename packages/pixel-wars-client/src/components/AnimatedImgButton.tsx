@@ -37,17 +37,25 @@ export default function AnimatedImgButton({ defaultImgSrc, spritesheetImgSrc, ti
   }, [frame, hovered, timings])
 
   const offset = hovered ? -frame : 0
+
+  const onHover = () => {
+    setHovered(true)
+    setHoverCount(hoverCount + 1)
+  }
+
+  const onHoverLoss = () => {
+    setHovered(false)
+  }
   
   return (
     <button
-      onMouseEnter={() => {
-        setHovered(true)
-        setHoverCount(hoverCount + 1)
-      }}
+      onMouseEnter={onHover}
 
-      onMouseLeave={() => {
-        setHovered(false)
-      }}
+      onMouseLeave={onHoverLoss}
+
+      onFocus={onHover}
+
+      onBlur={onHoverLoss}
 
       className={twMerge("relative p-0 block overflow-hidden", className)}
 
