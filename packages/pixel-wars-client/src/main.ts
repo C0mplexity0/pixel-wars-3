@@ -45,6 +45,7 @@ export function initMultiplayer(ip: string) {
       return
   
     client = new PixelWarsClient(getGameCanvas(), { connectionHandler: handler })
+    initEvent.fire()
   })
 }
 
