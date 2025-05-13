@@ -1,4 +1,4 @@
-import type { WorldPixel } from "pixel-wars-core/world";
+import type { PixelType, WorldPixel } from "pixel-wars-core/world";
 import WorldUtils from "pixel-wars-core/world/utils";
 import type PixelWarsClient from "..";
 
@@ -54,14 +54,18 @@ export default class ClientWorld {
     }
   }
 
-  getPixelTypes() {
+  getPixelTypes(): PixelType[] {
     const singleplayerCore = this.client.getSingleplayerCore()
 
     if (singleplayerCore) {
       return singleplayerCore.getPlayers()[0].getWorld().getPixelTypes()
     }
 
-    return []
+    return [
+      {
+        colour: "#ffffff"
+      }
+    ]
   }
 
   loadTexture(texture: string) {
