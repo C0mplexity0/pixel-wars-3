@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import "./App.css"
 import GameUi from "./GameUi"
 import logoBlack from "./assets/img/pixel-wars-black.png"
@@ -8,7 +8,7 @@ import singleplayerButtonDefault from "./assets/img/singleplayer-button-default.
 import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spritesheet.png"
 import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.png"
 import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.png"
-import { initialised, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
+import { initialised, initMultiplayer, initSingleplayer, offPixelWarsInit, onPixelWarsInit } from "./main"
 import Input from "./components/ui/Input"
 import Button from "./components/ui/Button"
 import AnimatedImg from "./components/AnimatedImg"
@@ -16,6 +16,7 @@ import loadingSpritesheet from "./assets/img/loading.png"
 
 function MultiplayerMenu() {
   const [loading, setLoading] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="flex flex-col text-center w-75">
@@ -38,11 +39,19 @@ function MultiplayerMenu() {
         </div> :
         <>
           <label htmlFor="address">Enter Server IP</label>
-          <Input name="address" id="address" type="text" placeholder="example.com" />
+          <Input 
+            name="address" 
+            id="address" 
+            type="text" 
+            placeholder="pw.example.com"
+            ref={inputRef}
+          />
           <Button 
             className="mt-2"
             onClick={() => {
               setLoading(true)
+              if (inputRef.current)
+                initMultiplayer(inputRef.current.value)
             }}
           >Connect</Button>
         </>

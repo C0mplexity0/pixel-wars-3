@@ -7,9 +7,16 @@ import ControlsHandler from "./player/controls"
 import MovementHandler from "./player/movement"
 import BuildingHandler from "./world/building"
 import Player from "pixel-wars-core/player"
+import type ConnectionHandler from "./connection"
+
+interface ClientOptions {
+  pixelWarsCore?: PixelWarsCore,
+  connectionHandler?: ConnectionHandler
+}
 
 export default class PixelWarsClient {
   private pixelWarsCore?: PixelWarsCore
+  private connectionHandler?: ConnectionHandler
 
   private debugModeEnabled: boolean
 
@@ -27,14 +34,22 @@ export default class PixelWarsClient {
   private onUpdateEvent: PixelWarsEvent
   private onDebugModeToggleEvent: PixelWarsEvent
 
-  constructor(canvas: HTMLCanvasElement, pixelWarsCore?: PixelWarsCore) {
+  constructor(canvas: HTMLCanvasElement, options?: ClientOptions) {
+    if (options?.pixelWarsCore && options.pixelWarsCore)
+      throw new Error("Both the PIXEL WARS CORE and a connection handler have been passed to the client. Only one should be passed (the core if in singleplayer, and the connection handler if in multiplayer).")
+
     console.info("STARTING PIXEL WARS CLIENT")
 
-    this.pixelWarsCore = pixelWarsCore
+    if (!options)
+      options = {}
 
-    if (pixelWarsCore) {
-      pixelWarsCore.addPlayer(new Player(pixelWarsCore))
+    this.pixelWarsCore = options.pixelWarsCore
+
+    if (this.pixelWarsCore) {
+      this.pixelWarsCore.addPlayer(new Player(this.pixelWarsCore))
     }
+
+    this.connectionHandler = options.connectionHandler
 
     this.debugModeEnabled = false
     

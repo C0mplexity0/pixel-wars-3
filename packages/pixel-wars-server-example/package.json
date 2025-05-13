@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "npm run tsc && node out/index.js",
-    "tsc": "tsc --project ."
+    "start": "npm run build && node out/bundle.cjs",
+    "build": "node build.js"
   },
   "keywords": [],
   "author": "C0mplexity",
   "license": "CC0-1.0",
   "type": "module",
   "devDependencies": {
+    "esbuild": "^0.25.4",
+    "esbuild-plugin-tsc": "^0.5.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
