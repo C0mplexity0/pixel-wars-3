@@ -6,7 +6,7 @@ export const PACKET_PREFIX = "pw-"
 export default class ConnectionHandler {
   private socket: Socket
 
-  private onSuccessEvent: PixelWarsEvent;
+  private onSuccessEvent: PixelWarsEvent<Parameters<() => void>>;
   private onSuccessEventCalled: boolean
 
   constructor(ip: string) {

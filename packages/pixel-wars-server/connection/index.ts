@@ -15,8 +15,8 @@ export default class ConnectionHandler {
   private io: Server
   private app: express.Express
 
-  private onConnectionEvent: PixelWarsEvent
-  private onPlayerJoinEvent: PixelWarsEvent
+  private onConnectionEvent: PixelWarsEvent<Parameters<(socket: Socket) => void>>
+  private onPlayerJoinEvent: PixelWarsEvent<Parameters<(player: ConnectedPlayer) => void>>
 
   constructor(server: PixelWarsServer, port: number) {
     this.server = server
@@ -59,11 +59,11 @@ export default class ConnectionHandler {
   }
 
   onPlayerJoin(callback: (player: ConnectedPlayer) => void) {
-    this.onConnectionEvent.addListener(callback)
+    this.onPlayerJoinEvent.addListener(callback)
   }
 
   offPlayerJoin(callback: (player: ConnectedPlayer) => void) {
-    this.onConnectionEvent.removeListener(callback)
+    this.onPlayerJoinEvent.removeListener(callback)
   }
 
   onConnection(callback: (socket: Socket) => void) {

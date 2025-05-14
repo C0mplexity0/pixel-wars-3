@@ -3,9 +3,9 @@ import PixelWarsClient from "./game"
 import PixelWarsEvent from "pixel-wars-core/event"
 import ConnectionHandler from "./game/connection"
 
-const initEvent = new PixelWarsEvent()
-const multiplayerConnectionMessageEvent = new PixelWarsEvent()
-const multiplayerConnectionFailureEvent = new PixelWarsEvent()
+const initEvent = new PixelWarsEvent<Parameters<() => void>>()
+const multiplayerConnectionMessageEvent = new PixelWarsEvent<Parameters<(message: string) => void>>()
+const multiplayerConnectionFailureEvent = new PixelWarsEvent<Parameters<(message: string) => void>>()
 
 let core: PixelWarsCore
 let client: PixelWarsClient

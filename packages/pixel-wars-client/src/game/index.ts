@@ -31,8 +31,8 @@ export default class PixelWarsClient {
 
   private lastUpdate: number
 
-  private onUpdateEvent: PixelWarsEvent
-  private onDebugModeToggleEvent: PixelWarsEvent
+  private onUpdateEvent: PixelWarsEvent<Parameters<(deltaTime: number) => void>>
+  private onDebugModeToggleEvent: PixelWarsEvent<Parameters<(enabled: boolean) => void>>
 
   constructor(canvas: HTMLCanvasElement, options?: ClientOptions) {
     if (options?.pixelWarsCore && options.pixelWarsCore)

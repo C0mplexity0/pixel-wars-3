@@ -16,8 +16,8 @@ export default class Player {
 
   private world: World
 
-  private onWorldChangeEvent: PixelWarsEvent
-  private onColourInventoryUpdatedEvent: PixelWarsEvent
+  private onWorldChangeEvent: PixelWarsEvent<Parameters<(world: World) => void>>
+  private onColourInventoryUpdatedEvent: PixelWarsEvent<Parameters<(colourInventory: number[], selectedColour: number) => void>>
 
   constructor(core: PixelWarsCore) {
     this.position = [0, 0]

@@ -19,8 +19,8 @@ const KEYBINDS: {[key: string]: string} = {
 export default class ControlsHandler {
   private pressedKeys: string[]
 
-  private onKeyUpEvent: PixelWarsEvent
-  private onKeyDownEvent: PixelWarsEvent
+  private onKeyUpEvent: PixelWarsEvent<Parameters<(keybind: string) => void>>
+  private onKeyDownEvent: PixelWarsEvent<Parameters<(keybind: string) => void>>
 
   constructor() {
     this.pressedKeys = []

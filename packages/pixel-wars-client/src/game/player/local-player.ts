@@ -14,7 +14,7 @@ export default class LocalPlayer implements NonPixelRenderer {
   private colourInventory: number[]
   private selectedColour: number
 
-  private onColourInventoryUpdatedEvent: PixelWarsEvent
+  private onColourInventoryUpdatedEvent: PixelWarsEvent<Parameters<(colourInventory: number[], selectedColour: number) => void>>
 
   constructor(client: PixelWarsClient) {
     this.colourId = 0
