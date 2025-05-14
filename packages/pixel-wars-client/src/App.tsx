@@ -62,10 +62,10 @@ function Menu() {
 
       <div className="absolute bottom-2 left-2">
         <a 
-          href="https://c0mplexity.com" 
+          href="https://github.com/C0mplexity0/pixel-wars-3" 
           target="_blank"
           className="underline"
-        >By C0mplexity</a>
+        >Available on GitHub</a>
       </div>
     </div>
   )
