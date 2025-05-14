@@ -1,6 +1,8 @@
 import PixelWarsCore from "pixel-wars-core"
 import ConnectionHandler from "./connection"
 import log4js from "log4js"
+import type ConnectedPlayer from "./connection/connected-player"
+import type { Socket } from "socket.io"
 
 export default class PixelWarsServer {
 
@@ -19,14 +21,22 @@ export default class PixelWarsServer {
     return this.logger
   }
 
+  getCore() {
+    return this.core
+  }
+
   start(port: number) {
     if (this.connection)
       this.connection.disconnect()
 
     this.connection = new ConnectionHandler(this, port)
-    this.connection.onConnection((socket) => {
+    this.connection.onConnection((socket: Socket) => {
       this.logger.info("New connection from " + socket.handshake.address)
       socket.emit("pw-connected")
+    })
+
+    this.connection.onPlayerJoin((player: ConnectedPlayer) => {
+      this.core.addPlayer(player)
     })
   }
 }

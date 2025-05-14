@@ -4,18 +4,25 @@ import express from "express"
 import type PixelWarsServer from ".."
 import cors from "cors"
 import PixelWarsEvent from "pixel-wars-core/event"
+import ConnectedPlayer from "./connected-player"
 
 export const PACKET_PREFIX = "pw-"
 
 export default class ConnectionHandler {
+  private server: PixelWarsServer
+  
   private httpServer: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
   private io: Server
   private app: express.Express
 
   private onConnectionEvent: PixelWarsEvent
+  private onPlayerJoinEvent: PixelWarsEvent
 
   constructor(server: PixelWarsServer, port: number) {
-    this.onConnectionEvent = new PixelWarsEvent
+    this.server = server
+
+    this.onConnectionEvent = new PixelWarsEvent()
+    this.onPlayerJoinEvent = new PixelWarsEvent()
 
     this.app = express()
     this.httpServer = http.createServer(this.app)
@@ -34,13 +41,29 @@ export default class ConnectionHandler {
       })
     })
 
-    this.io.on("connection", (socket) => {
+    this.io.on("connection", (socket: Socket) => {
+      this.#initSocket(socket)
       this.onConnectionEvent.fire(socket)
     })
 
     this.httpServer.listen(port, () => {
       server.getLogger().info("Running PIXEL WARS MULTIPLAYER server")
     })
+  }
+
+  #initSocket(socket: Socket) {
+    socket.on(PACKET_PREFIX + "join", () => {
+      const player = new ConnectedPlayer(this.server.getCore(), socket)
+      this.onPlayerJoinEvent.fire(player)
+    })
+  }
+
+  onPlayerJoin(callback: (player: ConnectedPlayer) => void) {
+    this.onConnectionEvent.addListener(callback)
+  }
+
+  offPlayerJoin(callback: (player: ConnectedPlayer) => void) {
+    this.onConnectionEvent.removeListener(callback)
   }
 
   onConnection(callback: (socket: Socket) => void) {
