@@ -42,12 +42,6 @@ export default function MultiplayerMenu() {
             alt="Loading spinner"
           />
           <span>{connectingMessage}</span>
-          <Button
-            className="w-full"
-            onClick={() => {
-              setLoading(false)
-            }}
-          >Cancel</Button>
         </div> :
         errorScreen ?
         <div className="size-full flex flex-col justify-center items-center gap-4">
