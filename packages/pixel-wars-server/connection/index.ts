@@ -5,6 +5,7 @@ import type PixelWarsServer from ".."
 import cors from "cors"
 import PixelWarsEvent from "pixel-wars-core/event"
 import ConnectedPlayer from "./connected-player"
+import type { PixelType, WorldPixel } from "pixel-wars-core/world"
 
 export const PACKET_PREFIX = "pw-"
 
@@ -56,6 +57,11 @@ export default class ConnectionHandler {
       const player = new ConnectedPlayer(this.server.getCore(), socket)
       this.onPlayerJoinEvent.fire(player)
     })
+
+    socket.on(PACKET_PREFIX + "placePixel", (x: number, y: number, pixel: WorldPixel) => {
+      const player = ConnectedPlayer.getConnectedPlayerFromSocket(socket)
+      player?.getWorld().setPixel(x, y, pixel)
+    })
   }
 
   onPlayerJoin(callback: (player: ConnectedPlayer) => void) {
@@ -85,5 +91,17 @@ export default class ConnectionHandler {
 
   emitConnected(socket: Socket) {
     this.emit(socket, "connected")
+  }
+
+  emitSetPixel(socket: Socket, x: number, y: number, pixel: WorldPixel) {
+    this.emit(socket, "setPixel", x, y, pixel)
+  }
+
+  emitSetPixelTypes(socket: Socket, pixelTypes: PixelType[]) {
+    this.emit(socket, "setPixelTypes", pixelTypes)
+  }
+
+  emitSetColourInventory(socket: Socket, colourInventory: number[]) {
+    this.emit(socket, "setColourInventory", colourInventory)
   }
 }

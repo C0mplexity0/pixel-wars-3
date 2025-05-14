@@ -52,6 +52,7 @@ export default class PixelWarsClient {
     this.connectionHandler = options.connectionHandler
 
     if (this.connectionHandler) {
+      this.connectionHandler.init(this)
       this.connectionHandler.onSuccess(() => {
         this.connectionHandler?.emitJoin()
       })
@@ -156,6 +157,10 @@ export default class PixelWarsClient {
 
   getSingleplayerCore() {
     return this.pixelWarsCore
+  }
+
+  getConnectionHandler() {
+    return this.connectionHandler
   }
 
   onDebugModeToggle(callback: (debugMode: boolean) => void) {

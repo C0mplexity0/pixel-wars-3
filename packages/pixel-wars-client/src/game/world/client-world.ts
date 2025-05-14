@@ -6,11 +6,17 @@ export default class ClientWorld {
   private world: {[coordinates: string]: WorldPixel[][]}
   private client: PixelWarsClient
   private textureCache: {[url: string]: HTMLImageElement}
+  private pixelTypes: PixelType[]
 
   constructor(client: PixelWarsClient) {
     this.world = {}
     this.client = client
     this.textureCache = {}
+    this.pixelTypes = [
+      {
+        colour: "#ffffff"
+      }
+    ]
   }
 
   #loadChunk(x: number, y: number) {
@@ -49,23 +55,42 @@ export default class ClientWorld {
   setPixel(x: number, y: number, pixel: WorldPixel) {
     const singleplayerCore = this.client.getSingleplayerCore()
 
+    singleplayerCore?.getPlayers()[0].getWorld().setPixel(x, y, pixel)
+
+    const [chunkX, chunkY] = WorldUtils.getChunkFromPixelPos(x, y)
+    const [xInChunk, yInChunk] = WorldUtils.getPosInChunkFromPixelPos(x, y)
+
+    const chunkId = WorldUtils.getChunkId(chunkX, chunkY)
+
+    if (!this.world[chunkId])
+      this.world[chunkId] = WorldUtils.createBlankChunk()
+
+    this.world[chunkId][yInChunk][xInChunk] = pixel
+  }
+
+  placePixel(x: number, y: number, pixel: WorldPixel) {
+    const singleplayerCore = this.client.getSingleplayerCore()
+
     if (singleplayerCore) {
-      singleplayerCore.getPlayers()[0].getWorld().setPixel(x, y, pixel)
+      this.setPixel(x, y, pixel)
     }
+
+    const connectionHandler = this.client.getConnectionHandler()
+    connectionHandler?.emitPlacePixel(x, y, pixel)
   }
 
   getPixelTypes(): PixelType[] {
     const singleplayerCore = this.client.getSingleplayerCore()
 
     if (singleplayerCore) {
-      return singleplayerCore.getPlayers()[0].getWorld().getPixelTypes()
+      this.pixelTypes = singleplayerCore.getPlayers()[0].getWorld().getPixelTypes()
     }
+    
+    return this.pixelTypes
+  }
 
-    return [
-      {
-        colour: "#ffffff"
-      }
-    ]
+  setPixelTypes(pixelTypes: PixelType[]) {
+    this.pixelTypes = pixelTypes
   }
 
   loadTexture(texture: string) {

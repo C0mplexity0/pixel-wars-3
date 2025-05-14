@@ -1,3 +1,4 @@
+import PixelWarsEvent from "../event";
 import WorldUtils from "./utils"
 
 export const CHUNK_SIZE = 16
@@ -16,6 +17,8 @@ export interface PixelType {
 export default class World {
   private world: {[coordinates: string]: WorldPixel[][]};
   private pixelTypes: PixelType[]
+
+  private onPixelChangeEvent: PixelWarsEvent<Parameters<(x: number, y: number, pixel: WorldPixel) => void>>
   
   constructor() {
     this.world = {}
@@ -84,6 +87,8 @@ export default class World {
         colour: "#F06292"
       }
     ]
+
+    this.onPixelChangeEvent = new PixelWarsEvent()
   }
 
   #generateNewChunk(x: number, y: number) {
@@ -125,10 +130,25 @@ export default class World {
     const [chunkX, chunkY] = WorldUtils.getChunkFromPixelPos(x, y)
     const [xInChunk, yInChunk] = WorldUtils.getPosInChunkFromPixelPos(x, y)
 
-    this.world[WorldUtils.getChunkId(chunkX, chunkY)][yInChunk][xInChunk] = pixel
+    const chunkId = WorldUtils.getChunkId(chunkX, chunkY)
+
+    if (!this.world[chunkId])
+      this.world[chunkId] = WorldUtils.createBlankChunk()
+
+    this.world[chunkId][yInChunk][xInChunk] = pixel
+
+    this.onPixelChangeEvent.fire(x, y, pixel)
   }
 
   getPixelTypes() {
     return this.pixelTypes
+  }
+
+  onPixelChange(callback: (x: number, y: number, pixel: WorldPixel) => void) {
+    this.onPixelChangeEvent.addListener(callback)
+  }
+
+  offPixelChange(callback: (x: number, y: number, pixel: WorldPixel) => void) {
+    this.onPixelChangeEvent.removeListener(callback)
   }
 }

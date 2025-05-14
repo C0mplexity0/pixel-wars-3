@@ -30,7 +30,6 @@ export function initSingleplayer() {
   const gameCanvas = getGameCanvas()
 
   core = new PixelWarsCore(false)
-  core.start()
 
   client = new PixelWarsClient(gameCanvas, { pixelWarsCore: core })
 

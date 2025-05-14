@@ -62,6 +62,11 @@ export default class LocalPlayer implements NonPixelRenderer {
     return this.colourInventory
   }
 
+  setColourInventory(colourInventory: number[]) {
+    this.colourInventory = colourInventory
+    this.onColourInventoryUpdatedEvent.fire(this.colourInventory, this.selectedColour)
+  }
+
   getPosition() {
     return this.position
   }

@@ -45,11 +45,11 @@ export default class BuildingHandler implements NonPixelRenderer {
       const pixelType = game.getClientWorld().getPixel(x, y)
 
       if (pixelType.typeId === 0) {
-        game.getClientWorld().setPixel(x, y, {
+        game.getClientWorld().placePixel(x, y, {
           typeId: game.getPlayer().getColourInventory()[game.getPlayer().getSelectedColour()]
         })
       } else {
-        game.getClientWorld().setPixel(x, y, {
+        game.getClientWorld().placePixel(x, y, {
           typeId: 0,
           playerCanWalk: true
         })

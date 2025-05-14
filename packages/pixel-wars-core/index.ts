@@ -4,8 +4,6 @@ import Player from "./player"
 export default class PixelWarsCore {
   private inMultiplayer: boolean
 
-  private started: boolean
-
   private worlds: World[]
   private players: Player[]
 
@@ -23,10 +21,10 @@ export default class PixelWarsCore {
       this.inMultiplayer = false
     }
 
-    this.started = false
-
     this.worlds = []
     this.players = []
+
+    this.createDefaultWorld()
   }
 
   createDefaultWorld() {
@@ -37,22 +35,16 @@ export default class PixelWarsCore {
     return this.worlds[0]
   }
 
-  start() {
-    if (this.started) {
-      return
-    }
-
-    this.started = true
-
-    this.createDefaultWorld()
-  }
-
   addPlayer(player: Player) {
     this.players.push(player)
   }
 
   getPlayers() {
     return this.players
+  }
+
+  getWorlds() {
+    return this.worlds
   }
 
   isInMultiplayer() {
