@@ -15,6 +15,6 @@ export default class PixelWarsServer {
     if (this.connection)
       this.connection.disconnect()
 
-    this.connection = new ConnectionHandler(port)
+    this.connection = new ConnectionHandler(this, port)
   }
 }
