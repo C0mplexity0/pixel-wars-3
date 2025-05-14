@@ -1,15 +1,20 @@
 import * as http from "node:http"
-import { Server } from "socket.io"
+import { Server, Socket } from "socket.io"
 import express from "express"
 import type PixelWarsServer from ".."
 import cors from "cors"
+import PixelWarsEvent from "pixel-wars-core/event"
 
 export default class ConnectionHandler {
   private httpServer: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
   private io: Server
   private app: express.Express
 
+  private onConnectionEvent: PixelWarsEvent
+
   constructor(server: PixelWarsServer, port: number) {
+    this.onConnectionEvent = new PixelWarsEvent
+
     this.app = express()
     this.httpServer = http.createServer(this.app)
     this.io = new Server(this.httpServer, {
@@ -28,12 +33,20 @@ export default class ConnectionHandler {
     })
 
     this.io.on("connection", (socket) => {
-      console.log(socket)
+      this.onConnectionEvent.fire(socket)
     })
 
     this.httpServer.listen(port, () => {
-      console.log("Running PIXEL WARS MULTIPLAYER server")
+      server.getLogger().info("Running PIXEL WARS MULTIPLAYER server")
     })
+  }
+
+  onConnection(callback: (socket: Socket) => void) {
+    this.onConnectionEvent.addListener(callback)
+  }
+
+  offConnection(callback: (socket: Socket) => void) {
+    this.onConnectionEvent.removeListener(callback)
   }
 
   disconnect() {
