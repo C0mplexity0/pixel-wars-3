@@ -5,6 +5,8 @@ import type PixelWarsServer from ".."
 import cors from "cors"
 import PixelWarsEvent from "pixel-wars-core/event"
 
+export const PACKET_PREFIX = "pw-"
+
 export default class ConnectionHandler {
   private httpServer: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
   private io: Server
@@ -52,5 +54,13 @@ export default class ConnectionHandler {
   disconnect() {
     this.io.close()
     this.httpServer.close()
+  }
+
+  emit(socket: Socket, message: string, ...args: unknown[]) {
+    socket.emit(`pw-${message}`, ...args)
+  }
+
+  emitConnected(socket: Socket) {
+    this.emit(socket, "connected")
   }
 }

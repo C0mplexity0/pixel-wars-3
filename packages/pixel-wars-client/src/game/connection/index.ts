@@ -1,6 +1,8 @@
 import PixelWarsEvent from "pixel-wars-core/event";
 import { io, Socket } from "socket.io-client";
 
+export const PACKET_PREFIX = "pw-"
+
 export default class ConnectionHandler {
   private socket: Socket
 
@@ -9,7 +11,7 @@ export default class ConnectionHandler {
 
   constructor(ip: string) {
     this.socket = io(`ws://${ip}`)
-    this.socket.on("connect", () => {
+    this.socket.on("pw-connected", () => {
       if (!this.onSuccessEventCalled) {
         this.onSuccessEvent.fire()
         this.onSuccessEventCalled = true
@@ -52,5 +54,13 @@ export default class ConnectionHandler {
 
   offSuccess(callback: () => void) {
     this.onSuccessEvent.removeListener(callback)
+  }
+
+  emit(message: string, ...args: unknown[]) {
+    this.socket.emit(PACKET_PREFIX + message, ...args)
+  }
+
+  emitJoin() {
+    this.emit("join")
   }
 }

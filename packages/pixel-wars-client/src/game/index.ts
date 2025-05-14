@@ -51,6 +51,12 @@ export default class PixelWarsClient {
 
     this.connectionHandler = options.connectionHandler
 
+    if (this.connectionHandler) {
+      this.connectionHandler.onSuccess(() => {
+        this.connectionHandler?.emitJoin()
+      })
+    }
+
     this.debugModeEnabled = false
     
     this.canvas = canvas

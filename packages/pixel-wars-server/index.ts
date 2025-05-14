@@ -26,6 +26,7 @@ export default class PixelWarsServer {
     this.connection = new ConnectionHandler(this, port)
     this.connection.onConnection((socket) => {
       this.logger.info("New connection from " + socket.handshake.address)
+      socket.emit("pw-connected")
     })
   }
 }
