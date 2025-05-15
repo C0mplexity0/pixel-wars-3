@@ -12,7 +12,7 @@ export default class ConnectionHandler {
   private onSuccessEventCalled: boolean
 
   constructor(ip: string) {
-    this.socket = io(`ws://${ip}`)
+    this.socket = io(`https://${ip}`)
     this.socket.on(PACKET_PREFIX + "connected", () => {
       if (!this.onSuccessEventCalled) {
         this.onSuccessEvent.fire()
@@ -26,7 +26,7 @@ export default class ConnectionHandler {
 
   static async getServerInfo(ip: string) {
     try {
-      const result = await fetch(`http://${ip}/pixel-wars/server-info`)
+      const result = await fetch(`https://${ip}/pixel-wars/server-info`)
 
       if (!result.ok)
         return { validPixelWarsServer: false }

@@ -44,11 +44,11 @@ export default class PixelWarsServer {
     return this.core
   }
 
-  start(port: number) {
+  start(port: number, ssl: { key: NonSharedBuffer, cert: NonSharedBuffer }) {
     if (this.connection)
       this.connection.disconnect()
 
-    this.connection = new ConnectionHandler(this, port)
+    this.connection = new ConnectionHandler(this, port, ssl)
     this.connection.onConnection((socket: Socket) => {
       this.logger.info("New connection from " + socket.handshake.address)
       socket.emit("pw-connected")

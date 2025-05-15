@@ -1,4 +1,4 @@
-import * as http from "node:http"
+import * as https from "node:https"
 import { Server, Socket } from "socket.io"
 import express from "express"
 import type PixelWarsServer from ".."
@@ -12,21 +12,21 @@ export const PACKET_PREFIX = "pw-"
 export default class ConnectionHandler {
   private server: PixelWarsServer
   
-  private httpServer: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
+  private httpServer: https.Server
   private io: Server
   private app: express.Express
 
   private onConnectionEvent: PixelWarsEvent<Parameters<(socket: Socket) => void>>
   private onPlayerJoinEvent: PixelWarsEvent<Parameters<(player: ConnectedPlayer) => void>>
 
-  constructor(server: PixelWarsServer, port: number) {
+  constructor(server: PixelWarsServer, port: number, ssl: { key: NonSharedBuffer, cert: NonSharedBuffer }) {
     this.server = server
 
     this.onConnectionEvent = new PixelWarsEvent()
     this.onPlayerJoinEvent = new PixelWarsEvent()
 
     this.app = express()
-    this.httpServer = http.createServer(this.app)
+    this.httpServer = https.createServer(ssl, this.app)
     this.io = new Server(this.httpServer, {
       cors: {
         origin: "*",
