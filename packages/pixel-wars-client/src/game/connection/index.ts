@@ -48,9 +48,6 @@ export default class ConnectionHandler {
     })
 
     this.socket.on(PACKET_PREFIX + "setPixel", (x: number, y: number, pixel: WorldPixel) => {
-      console.log(pixel)
-      console.log(x)
-      console.log(y)
       client.getClientWorld().setPixel(x, y, pixel)
     })
   }
