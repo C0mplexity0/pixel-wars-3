@@ -35,7 +35,7 @@ export default class PixelWarsClient {
   private onDebugModeToggleEvent: PixelWarsEvent<Parameters<(enabled: boolean) => void>>
 
   constructor(canvas: HTMLCanvasElement, options?: ClientOptions) {
-    if (options?.pixelWarsCore && options.pixelWarsCore)
+    if (options?.pixelWarsCore && options.connectionHandler)
       throw new Error("Both the PIXEL WARS CORE and a connection handler have been passed to the client. Only one should be passed (the core if in singleplayer, and the connection handler if in multiplayer).")
 
     console.info("STARTING PIXEL WARS CLIENT")
