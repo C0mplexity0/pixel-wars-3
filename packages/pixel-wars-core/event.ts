@@ -1,24 +1,41 @@
-export default class PixelWarsEvent<T extends Parameters<(...args: any) => any>> {
-  private listeners: ((...args: T) => void)[]
+export class Event {}
+
+export class CancellableEvent extends Event {
+  protected cancelled: boolean
+
+  constructor() {
+    super()
+    this.cancelled = false
+  }
+
+  cancel() {
+    this.cancelled = true
+  }
+}
+
+export type Listener<T extends Event> = (event: T) => void
+
+export class EventHandler<T extends Event> {
+  
+  private listeners: Listener<T>[]
 
   constructor() {
     this.listeners = []
   }
 
-  addListener(listener: (...args: T) => void) {
+  addListener(listener: Listener<T>) {
     this.listeners.push(listener)
   }
 
-  removeListener(listener: (...args: T) => void) {
+  removeListener(listener: Listener<T>) {
     const i = this.listeners.indexOf(listener)
-    if (i >= 0) {
+
+    if (i)
       this.listeners.splice(i, 1)
-    }
   }
 
-  fire(...args: T) {
-    for (let i=0;i<this.listeners.length;i++) {
-      this.listeners[i](...args)
-    }
+  fire(event: T) {
+    for (let i=0;i<this.listeners.length;i++)
+      this.listeners[i](event)
   }
 }

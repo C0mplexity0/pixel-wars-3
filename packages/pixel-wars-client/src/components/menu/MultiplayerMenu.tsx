@@ -3,7 +3,7 @@ import Button from "../../components/ui/Button"
 import AnimatedImg from "../../components/AnimatedImg"
 import loadingSpritesheet from "../../assets/img/loading.png"
 import { useState, useRef, useEffect } from "react"
-import { onMultiplayerConnectionMessage, offMultiplayerConnectionMessage, initMultiplayer, onMultiplayerConnectionFailure, offMultiplayerConnectionFailure } from "../../main"
+import { onMultiplayerConnectionMessage, offMultiplayerConnectionMessage, initMultiplayer, onMultiplayerConnectionFailure, offMultiplayerConnectionFailure, MultiplayerConnectionChangeEvent } from "../../main"
 
 export default function MultiplayerMenu() {
   const [loading, setLoading] = useState(false)
@@ -12,13 +12,13 @@ export default function MultiplayerMenu() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    const connectionMessageListener = (message: string) => {
-      setConnectingMessage(message)
+    const connectionMessageListener = (event: MultiplayerConnectionChangeEvent) => {
+      setConnectingMessage(event.getMessage())
     }
 
-    const connectionFailedListener = (message: string) => {
+    const connectionFailedListener = (event: MultiplayerConnectionChangeEvent) => {
       setLoading(false)
-      setErrorScreen(message)
+      setErrorScreen(event.getMessage())
     }
 
     onMultiplayerConnectionMessage(connectionMessageListener)

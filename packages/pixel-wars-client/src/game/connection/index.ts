@@ -1,4 +1,4 @@
-import PixelWarsEvent from "pixel-wars-core/event";
+import { Event, EventHandler } from "pixel-wars-core/event";
 import type { PixelType, WorldPixel } from "pixel-wars-core/world";
 import { io, Socket } from "socket.io-client";
 import type PixelWarsClient from "..";
@@ -8,19 +8,20 @@ export const PACKET_PREFIX = "pw-"
 export default class ConnectionHandler {
   private socket: Socket
 
-  private onSuccessEvent: PixelWarsEvent<Parameters<() => void>>;
+  private onSuccessEvent: EventHandler<Event>;
   private onSuccessEventCalled: boolean
 
   constructor(ip: string) {
     this.socket = io(`https://${ip}`)
     this.socket.on(PACKET_PREFIX + "connected", () => {
       if (!this.onSuccessEventCalled) {
-        this.onSuccessEvent.fire()
+        const event = new Event()
+        this.onSuccessEvent.fire(event)
         this.onSuccessEventCalled = true
       }
     })
 
-    this.onSuccessEvent = new PixelWarsEvent()
+    this.onSuccessEvent = new EventHandler()
     this.onSuccessEventCalled = false
   }
 

@@ -1,4 +1,4 @@
-import PixelWarsEvent from "pixel-wars-core/event"
+import { EventHandler, type Listener } from "pixel-wars-core/event"
 
 const KEYBINDS: {[key: string]: string} = {
   "ARROWUP": "UP",
@@ -16,24 +16,37 @@ const KEYBINDS: {[key: string]: string} = {
   "SHIFT": "BUILD_MODE"
 }
 
+export class KeyEvent {
+  private keyType: string
+
+  constructor(keyType: string) {
+    this.keyType = keyType
+  }
+
+  getKeyType() {
+    return this.keyType
+  }
+}
+
 export default class ControlsHandler {
   private pressedKeys: string[]
 
-  private onKeyUpEvent: PixelWarsEvent<Parameters<(keybind: string) => void>>
-  private onKeyDownEvent: PixelWarsEvent<Parameters<(keybind: string) => void>>
+  private onKeyUpEvent: EventHandler<KeyEvent>
+  private onKeyDownEvent: EventHandler<KeyEvent>
 
   constructor() {
     this.pressedKeys = []
 
-    this.onKeyUpEvent = new PixelWarsEvent()
-    this.onKeyDownEvent = new PixelWarsEvent()
+    this.onKeyUpEvent = new EventHandler()
+    this.onKeyDownEvent = new EventHandler()
 
     document.addEventListener("keydown", (event) => {
       const key = event.key.toUpperCase()
 
       if (!this.pressedKeys.includes(key)) {
         this.pressedKeys.push(key)
-        this.onKeyDownEvent.fire(KEYBINDS[key])
+        const event = new KeyEvent(KEYBINDS[key])
+        this.onKeyDownEvent.fire(event)
       }
     })
 
@@ -44,23 +57,24 @@ export default class ControlsHandler {
       if (i >= 0)
         this.pressedKeys.splice(i, 1)
 
-      this.onKeyUpEvent.fire(KEYBINDS[key])
+      const keyEvent = new KeyEvent(KEYBINDS[key])
+      this.onKeyUpEvent.fire(keyEvent)
     })
   }
 
-  onKeyUp(callback: (keyType?: string) => void) {
+  onKeyUp(callback: Listener<KeyEvent>) {
     this.onKeyUpEvent.addListener(callback)
   }
 
-  offKeyUp(callback: (keyType?: string) => void) {
+  offKeyUp(callback: Listener<KeyEvent>) {
     this.onKeyUpEvent.removeListener(callback)
   }
 
-  onKeyDown(callback: (keyType?: string) => void) {
+  onKeyDown(callback: Listener<KeyEvent>) {
     this.onKeyDownEvent.addListener(callback)
   }
 
-  offKeyDown(callback: (keyType?: string) => void) {
+  offKeyDown(callback: Listener<KeyEvent>) {
     this.onKeyDownEvent.removeListener(callback)
   }
 

@@ -1,4 +1,3 @@
-import PixelWarsEvent from "pixel-wars-core/event"
 import LocalPlayer from "./player/local-player"
 import Renderer, { VISIBLE_PIXEL_RADIUS } from "./renderer"
 import ClientWorld from "./world/client-world"
@@ -9,10 +8,39 @@ import BuildingHandler from "./world/building"
 import Player from "pixel-wars-core/player"
 import type ConnectionHandler from "./connection"
 import PacketInJoin from "pixel-wars-protocol/definitions/packets/in/join"
+import { Event, EventHandler, type Listener } from "pixel-wars-core/event"
 
 interface ClientOptions {
   pixelWarsCore?: PixelWarsCore,
   connectionHandler?: ConnectionHandler
+}
+
+export class UpdateEvent extends Event {
+  private deltaTime: number
+
+  constructor(deltaTime: number) {
+    super()
+
+    this.deltaTime = deltaTime
+  }
+
+  getDeltaTime() {
+    return this.deltaTime
+  }
+}
+
+export class DebugModeToggleEvent extends Event {
+  private enabled: boolean
+
+  constructor(enabled: boolean) {
+    super()
+
+    this.enabled = enabled
+  }
+
+  debugModeEnabled() {
+    return this.enabled
+  }
 }
 
 export default class PixelWarsClient {
@@ -32,8 +60,8 @@ export default class PixelWarsClient {
 
   private lastUpdate: number
 
-  private onUpdateEvent: PixelWarsEvent<Parameters<(deltaTime: number) => void>>
-  private onDebugModeToggleEvent: PixelWarsEvent<Parameters<(enabled: boolean) => void>>
+  private onUpdateEvent: EventHandler<UpdateEvent>
+  private onDebugModeToggleEvent: EventHandler<DebugModeToggleEvent>
 
   constructor(canvas: HTMLCanvasElement, options?: ClientOptions) {
     if (options?.pixelWarsCore && options.connectionHandler)
@@ -76,20 +104,25 @@ export default class PixelWarsClient {
 
     this.lastUpdate = Date.now()
 
-    this.onUpdateEvent = new PixelWarsEvent()
-    this.onDebugModeToggleEvent = new PixelWarsEvent()
+    this.onUpdateEvent = new EventHandler()
+    this.onDebugModeToggleEvent = new EventHandler()
 
     window.addEventListener("keyup", (event) => {
       if (event.key.toLowerCase() === "d" && event.ctrlKey && event.altKey) {
         event.preventDefault()
         this.debugModeEnabled = !this.debugModeEnabled
-        this.onDebugModeToggleEvent.fire(this.debugModeEnabled)
+        this.#sendDebugModeToggleEvent()
       }
     })
 
     setTimeout(() => {
       this.#update()
     }, 0)
+  }
+
+  #sendDebugModeToggleEvent() {
+    const event = new DebugModeToggleEvent(this.debugModeEnabled)
+    this.onDebugModeToggleEvent.fire(event)
   }
 
   #getRegionForRendering() {
@@ -117,18 +150,19 @@ export default class PixelWarsClient {
 
     this.movementHandler.update()
 
-    this.onUpdateEvent.fire(deltaTime)
+    const event = new UpdateEvent(deltaTime)
+    this.onUpdateEvent.fire(event)
 
     setTimeout(() => {
       this.#update()
     }, 0)
   }
 
-  onUpdate(callback: (deltaTime: number) => void) {
+  onUpdate(callback: Listener<UpdateEvent>) {
     this.onUpdateEvent.addListener(callback)
   }
 
-  offUpdate(callback: (deltaTime: number) => void) {
+  offUpdate(callback: Listener<UpdateEvent>) {
     this.onUpdateEvent.removeListener(callback)
   }
 
@@ -167,11 +201,11 @@ export default class PixelWarsClient {
     return this.connectionHandler
   }
 
-  onDebugModeToggle(callback: (debugMode: boolean) => void) {
+  onDebugModeToggle(callback: Listener<DebugModeToggleEvent>) {
     this.onDebugModeToggleEvent.addListener(callback)
   }
 
-  offDebugModeToggle(callback: (debugMode: boolean) => void) {
+  offDebugModeToggle(callback: Listener<DebugModeToggleEvent>) {
     this.onDebugModeToggleEvent.removeListener(callback)
   }
 

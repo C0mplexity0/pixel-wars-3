@@ -3,11 +3,37 @@ import { Server, Socket } from "socket.io"
 import express from "express"
 import type PixelWarsServer from ".."
 import cors from "cors"
-import PixelWarsEvent from "pixel-wars-core/event"
 import ConnectedPlayer from "./connected-player"
 import type { WorldPixel } from "pixel-wars-core/world"
+import { Event, EventHandler, type Listener } from "pixel-wars-core/event"
 
 export const PACKET_PREFIX = "pw-"
+
+export class ConnectionEvent extends Event {
+  private socket: Socket
+
+  constructor(socket: Socket) {
+    super()
+    this.socket = socket
+  }
+
+  getSocket() {
+    return this.socket
+  }
+}
+
+export class PlayerJoinEvent extends Event {
+  private player: ConnectedPlayer
+
+  constructor(player: ConnectedPlayer) {
+    super()
+    this.player = player
+  }
+
+  getPlayer() {
+    return this.player
+  }
+}
 
 export default class ConnectionHandler {
   private server: PixelWarsServer
@@ -16,14 +42,14 @@ export default class ConnectionHandler {
   private io: Server
   private app: express.Express
 
-  private onConnectionEvent: PixelWarsEvent<Parameters<(socket: Socket) => void>>
-  private onPlayerJoinEvent: PixelWarsEvent<Parameters<(player: ConnectedPlayer) => void>>
+  private onConnectionEvent: EventHandler<ConnectionEvent>
+  private onPlayerJoinEvent: EventHandler<PlayerJoinEvent>
 
   constructor(server: PixelWarsServer, port: number, ssl: { key: NonSharedBuffer, cert: NonSharedBuffer }) {
     this.server = server
 
-    this.onConnectionEvent = new PixelWarsEvent()
-    this.onPlayerJoinEvent = new PixelWarsEvent()
+    this.onConnectionEvent = new EventHandler()
+    this.onPlayerJoinEvent = new EventHandler()
 
     this.app = express()
     this.httpServer = https.createServer(ssl, this.app)
@@ -44,7 +70,8 @@ export default class ConnectionHandler {
 
     this.io.on("connection", (socket: Socket) => {
       this.#initSocket(socket)
-      this.onConnectionEvent.fire(socket)
+      const event = new ConnectionEvent(socket)
+      this.onConnectionEvent.fire(event)
     })
 
     this.httpServer.listen(port, () => {
@@ -55,7 +82,8 @@ export default class ConnectionHandler {
   #initSocket(socket: Socket) {
     socket.on(PACKET_PREFIX + "join", () => {
       const player = new ConnectedPlayer(this.server.getCore(), socket)
-      this.onPlayerJoinEvent.fire(player)
+      const event = new PlayerJoinEvent(player)
+      this.onPlayerJoinEvent.fire(event)
     })
 
     socket.on(PACKET_PREFIX + "placePixel", (x: number, y: number, pixel: WorldPixel) => {
@@ -64,19 +92,19 @@ export default class ConnectionHandler {
     })
   }
 
-  onPlayerJoin(callback: (player: ConnectedPlayer) => void) {
+  onPlayerJoin(callback: Listener<PlayerJoinEvent>) {
     this.onPlayerJoinEvent.addListener(callback)
   }
 
-  offPlayerJoin(callback: (player: ConnectedPlayer) => void) {
+  offPlayerJoin(callback: Listener<PlayerJoinEvent>) {
     this.onPlayerJoinEvent.removeListener(callback)
   }
 
-  onConnection(callback: (socket: Socket) => void) {
+  onConnection(callback: Listener<ConnectionEvent>) {
     this.onConnectionEvent.addListener(callback)
   }
 
-  offConnection(callback: (socket: Socket) => void) {
+  offConnection(callback: Listener<ConnectionEvent>) {
     this.onConnectionEvent.removeListener(callback)
   }
 

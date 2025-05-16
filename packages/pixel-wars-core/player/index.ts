@@ -1,5 +1,5 @@
 import type PixelWarsCore from ".."
-import PixelWarsEvent from "../event"
+import { Event, EventHandler, type Listener } from "../event"
 import World from "../world"
 
 export const PLAYER_COLOURS = [
@@ -7,6 +7,39 @@ export const PLAYER_COLOURS = [
   "#00ff00",
   "#0000ff"
 ]
+
+export class WorldChangeEvent extends Event {
+  private world: World
+
+  constructor(world: World) {
+    super()
+    this.world = world
+  }
+
+  getWorld() {
+    return this.world
+  }
+}
+
+export class ColourInventoryUpdatedEvent extends Event {
+
+  private colourInventory: number[]
+  private selectedColour: number
+
+  constructor(colourInventory: number[], selectedColour: number) {
+    super()
+    this.colourInventory = colourInventory
+    this.selectedColour = selectedColour
+  }
+
+  getColourInventory() {
+    return this.colourInventory
+  }
+
+  getSelectedColour() {
+    return this.selectedColour
+  }
+}
 
 export default class Player {
   protected position: number[]
@@ -16,8 +49,8 @@ export default class Player {
 
   private world: World
 
-  private onWorldChangeEvent: PixelWarsEvent<Parameters<(world: World) => void>>
-  private onColourInventoryUpdatedEvent: PixelWarsEvent<Parameters<(colourInventory: number[], selectedColour: number) => void>>
+  private onWorldChangeEvent: EventHandler<WorldChangeEvent>
+  private onColourInventoryUpdatedEvent: EventHandler<ColourInventoryUpdatedEvent>
 
   constructor(core: PixelWarsCore) {
     this.position = [0, 0]
@@ -25,12 +58,12 @@ export default class Player {
 
     this.world = core.getDefaultWorld()
 
-    this.onWorldChangeEvent = new PixelWarsEvent()
+    this.onWorldChangeEvent = new EventHandler()
 
     this.colourInventory = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     this.selectedColour = 0
 
-    this.onColourInventoryUpdatedEvent = new PixelWarsEvent()
+    this.onColourInventoryUpdatedEvent = new EventHandler()
   }
 
   getPosition() {
@@ -44,14 +77,15 @@ export default class Player {
   setWorld(world: World) {
     this.world = world
 
-    this.onWorldChangeEvent.fire(world)    
+    const event = new WorldChangeEvent(world)
+    this.onWorldChangeEvent.fire(event)    
   }
 
-  onWorldChange(callback: (newWorld: World) => void) {
+  onWorldChange(callback: Listener<WorldChangeEvent>) {
     this.onWorldChangeEvent.addListener(callback)
   }
 
-  offWorldChange(callback: (newWorld: World) => void) {
+  offWorldChange(callback: Listener<WorldChangeEvent>) {
     this.onWorldChangeEvent.removeListener(callback)
   }
 
@@ -63,11 +97,11 @@ export default class Player {
     return this.colourInventory
   }
 
-  onColourInventoryUpdated(callback: (colourInventory: number[], selectedColour: number) => void) {
+  onColourInventoryUpdated(callback: Listener<ColourInventoryUpdatedEvent>) {
     this.onColourInventoryUpdatedEvent.addListener(callback)
   }
 
-  offColourInventoryUpdated(callback: (colourInventory: number[], selectedColour: number) => void) {
+  offColourInventoryUpdated(callback: Listener<ColourInventoryUpdatedEvent>) {
     this.onColourInventoryUpdatedEvent.removeListener(callback)
   }
 
@@ -77,7 +111,8 @@ export default class Player {
 
   setSelectedColour(newColour: number) {
     this.selectedColour = newColour
-    this.onColourInventoryUpdatedEvent.fire(this.colourInventory, this.selectedColour)
+    const event = new ColourInventoryUpdatedEvent(this.colourInventory, this.selectedColour)
+    this.onColourInventoryUpdatedEvent.fire(event)
   }
 
   getColourId() {

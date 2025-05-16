@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { getClient } from "../main"
+import type { UpdateEvent } from "../game"
 
 export default function Debug() {
   const [fps, setFps] = useState(0)
@@ -8,7 +9,8 @@ export default function Debug() {
   useEffect(() => {
     const game = getClient()
 
-    const callback = (deltaTime: number) => {
+    const callback = (event: UpdateEvent) => {
+      const deltaTime = event.getDeltaTime()
       setFps(Math.floor(1000/deltaTime))
       setCoordinates(game.getPlayer().getPosition())
     }

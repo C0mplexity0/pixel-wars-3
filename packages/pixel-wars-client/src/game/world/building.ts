@@ -8,14 +8,12 @@ export default class BuildingHandler implements NonPixelRenderer {
   constructor(game: PixelWarsGame) {
     this.game = game
 
-    game.getControls().onKeyDown((keyType) => {
+    game.getControls().onKeyDown((event) => {
       if (!this.game.getControls().keyTypePressed("BUILD_MODE")) {
         return
       }
 
-      if (!keyType) {
-        return
-      }
+      const keyType = event.getKeyType()
 
       let editPos
 

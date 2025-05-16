@@ -1,11 +1,24 @@
 import PixelWarsCore from "pixel-wars-core"
 import PixelWarsClient from "./game"
-import PixelWarsEvent from "pixel-wars-core/event"
 import ConnectionHandler from "./game/connection"
+import { Event, EventHandler, type Listener } from "pixel-wars-core/event"
 
-const initEvent = new PixelWarsEvent<Parameters<() => void>>()
-const multiplayerConnectionMessageEvent = new PixelWarsEvent<Parameters<(message: string) => void>>()
-const multiplayerConnectionFailureEvent = new PixelWarsEvent<Parameters<(message: string) => void>>()
+export class MultiplayerConnectionChangeEvent extends Event {
+  private message: string
+
+  constructor(message: string) {
+    super()
+    this.message = message
+  }
+
+  getMessage() {
+    return this.message
+  }
+}
+
+const initEvent = new EventHandler<Event>()
+const multiplayerConnectionMessageEvent = new EventHandler<MultiplayerConnectionChangeEvent>()
+const multiplayerConnectionFailureEvent = new EventHandler<MultiplayerConnectionChangeEvent>()
 
 let core: PixelWarsCore
 let client: PixelWarsClient
@@ -33,23 +46,23 @@ export function initSingleplayer() {
 
   client = new PixelWarsClient(gameCanvas, { pixelWarsCore: core })
 
-  initEvent.fire()
+  initEvent.fire(new Event())
 }
 
 export async function initMultiplayer(ip: string) {
   if (initialised())
     return
 
-  multiplayerConnectionMessageEvent.fire("Fetching server info...")
+  multiplayerConnectionMessageEvent.fire(new MultiplayerConnectionChangeEvent("Fetching server info..."))
 
   const serverInfo = await ConnectionHandler.getServerInfo(ip)
 
   if (!serverInfo.validPixelWarsServer) {
-    multiplayerConnectionFailureEvent.fire("Couldn't fetch server info.")
+    multiplayerConnectionFailureEvent.fire(new MultiplayerConnectionChangeEvent("Couldn't fetch server info."))
     return
   }
 
-  multiplayerConnectionMessageEvent.fire("Connecting to server...")
+  multiplayerConnectionMessageEvent.fire(new MultiplayerConnectionChangeEvent("Connecting to server..."))
 
   const handler = new ConnectionHandler(ip)
   handler.onSuccess(() => {
@@ -57,23 +70,23 @@ export async function initMultiplayer(ip: string) {
       return
   
     client = new PixelWarsClient(getGameCanvas(), { connectionHandler: handler })
-    initEvent.fire()
+    initEvent.fire(new Event())
   })
 }
 
-export function onMultiplayerConnectionMessage(callback: (message: string) => void) {
+export function onMultiplayerConnectionMessage(callback: Listener<MultiplayerConnectionChangeEvent>) {
   multiplayerConnectionMessageEvent.addListener(callback)
 }
 
-export function offMultiplayerConnectionMessage(callback: (message: string) => void) {
+export function offMultiplayerConnectionMessage(callback: Listener<MultiplayerConnectionChangeEvent>) {
   multiplayerConnectionMessageEvent.removeListener(callback)
 }
 
-export function onMultiplayerConnectionFailure(callback: (message: string) => void) {
+export function onMultiplayerConnectionFailure(callback: Listener<MultiplayerConnectionChangeEvent>) {
   multiplayerConnectionFailureEvent.addListener(callback)
 }
 
-export function offMultiplayerConnectionFailure(callback: (message: string) => void) {
+export function offMultiplayerConnectionFailure(callback: Listener<MultiplayerConnectionChangeEvent>) {
   multiplayerConnectionFailureEvent.removeListener(callback)
 }
 

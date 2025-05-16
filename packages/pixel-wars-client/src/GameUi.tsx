@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Debug from "./debug/Debug";
 import { getClient } from "./main";
 import { ShiftKeyIndicator } from "./components/ui/KeyIndicator";
+import type { ColourInventoryUpdatedEvent } from "pixel-wars-core/player";
+import type { DebugModeToggleEvent } from "./game";
 
 function Inventory() {
   const game = getClient()
@@ -9,7 +11,9 @@ function Inventory() {
   const [colours, setColours] = useState(game.getPlayer().getColourInventory())
 
   useEffect(() => {
-    const callback = (colourInventory: number[], selectedColour: number) => {
+    const callback = (event: ColourInventoryUpdatedEvent) => {
+      const colourInventory = event.getColourInventory()
+      const selectedColour = event.getSelectedColour()
       setSelectedColour(selectedColour)
       setColours(colourInventory)
     }
@@ -62,8 +66,8 @@ export default function GameUi() {
   const [buildKeyTipEnabled, setBuildKeyTipEnabled] = useState(true)
 
   useEffect(() => {
-    const debugModeToggleCallback = (enabled: boolean) => {
-      setDebugModeEnabled(enabled)
+    const debugModeToggleCallback = (event: DebugModeToggleEvent) => {
+      setDebugModeEnabled(event.debugModeEnabled())
     }
 
     game.onDebugModeToggle(debugModeToggleCallback)

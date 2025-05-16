@@ -2,7 +2,6 @@ import PixelWarsCore from "pixel-wars-core"
 import ConnectionHandler from "./connection"
 import log4js from "log4js"
 import ConnectedPlayer from "./connection/connected-player"
-import type { Socket } from "socket.io"
 import type World from "pixel-wars-core/world"
 import PacketOutSetPixel from "pixel-wars-protocol/definitions/packets/out/set-pixel"
 import PacketOutSetPixelTypes from "pixel-wars-protocol/definitions/packets/out/set-pixel-types"
@@ -29,7 +28,7 @@ export default class PixelWarsServer {
   }
 
   #initWorld(world: World) {
-    world.onPixelChange((x, y, pixel) => {
+    world.onPixelChange((event) => {
       const players = this.core.getPlayers()
       for (let i=0;i<players.length;i++) {
         const player = players[i]
@@ -37,7 +36,8 @@ export default class PixelWarsServer {
         if (!(player instanceof ConnectedPlayer))
           return
 
-        const packet = new PacketOutSetPixel(player.getSocket(), x, y, pixel)
+        const pos = event.getPosition()
+        const packet = new PacketOutSetPixel(player.getSocket(), pos[0], pos[1], event.getWorldPixel())
         packet.send()
       }
     })
@@ -56,14 +56,16 @@ export default class PixelWarsServer {
       this.connection.disconnect()
 
     this.connection = new ConnectionHandler(this, port, ssl)
-    this.connection.onConnection((socket: Socket) => {
+    this.connection.onConnection((event) => {
+      const socket = event.getSocket()
       this.logger.info("New connection from " + socket.handshake.address)
     
       const packet = new PacketOutConnected(socket)
       packet.send()
     })
 
-    this.connection.onPlayerJoin((player: ConnectedPlayer) => {
+    this.connection.onPlayerJoin((event) => {
+      const player = event.getPlayer()
       this.core.addPlayer(player)
 
       this.getLogger().info("Player joined from " + player.getSocket().handshake.address)
