@@ -188,9 +188,9 @@ export default class PixelWarsClient {
 
   isInMultiplayer() {
     if (this.pixelWarsCore) {
-      return true
+      return false
     }
-    return false
+    return true
   }
 
   getSingleplayerCore() {
