@@ -1,6 +1,7 @@
 import type { PixelType, WorldPixel } from "pixel-wars-core/world";
 import WorldUtils from "pixel-wars-core/world/utils";
 import type PixelWarsClient from "..";
+import PacketInPlacePixel from "pixel-wars-protocol/definitions/packets/in/place-pixel";
 
 export default class ClientWorld {
   private world: {[coordinates: string]: WorldPixel[][]}
@@ -76,7 +77,12 @@ export default class ClientWorld {
     }
 
     const connectionHandler = this.client.getConnectionHandler()
-    connectionHandler?.emitPlacePixel(x, y, pixel)
+
+    if (!connectionHandler)
+      return
+
+    const packet = new PacketInPlacePixel(connectionHandler.getSocket(), x, y, pixel)
+    packet.send()
   }
 
   getPixelTypes(): PixelType[] {

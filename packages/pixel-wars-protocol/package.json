@@ -1,0 +1,13 @@
+{
+  "name": "pixel-wars-protocol",
+  "version": "3.0.0",
+  "description": "",
+  "author": "C0mplexity0",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "dependencies": {
+    "pixel-wars-core": "^3.0.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  }
+}

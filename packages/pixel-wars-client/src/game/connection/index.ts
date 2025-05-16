@@ -38,6 +38,10 @@ export default class ConnectionHandler {
     }
   }
 
+  getSocket() {
+    return this.socket
+  }
+
   init(client: PixelWarsClient) {
     this.socket.on(PACKET_PREFIX + "setPixelTypes", (pixelTypes: PixelType[]) => {
       client.getClientWorld().setPixelTypes(pixelTypes)
@@ -70,17 +74,5 @@ export default class ConnectionHandler {
 
   offSuccess(callback: () => void) {
     this.onSuccessEvent.removeListener(callback)
-  }
-
-  emit(message: string, ...args: unknown[]) {
-    this.socket.emit(PACKET_PREFIX + message, ...args)
-  }
-
-  emitJoin() {
-    this.emit("join")
-  }
-
-  emitPlacePixel(x: number, y: number, pixel: WorldPixel) {
-    this.emit("placePixel", x, y, pixel)
   }
 }

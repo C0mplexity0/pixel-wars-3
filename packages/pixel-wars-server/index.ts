@@ -4,6 +4,10 @@ import log4js from "log4js"
 import ConnectedPlayer from "./connection/connected-player"
 import type { Socket } from "socket.io"
 import type World from "pixel-wars-core/world"
+import PacketOutSetPixel from "pixel-wars-protocol/definitions/packets/out/set-pixel"
+import PacketOutSetPixelTypes from "pixel-wars-protocol/definitions/packets/out/set-pixel-types"
+import PacketOutSetColourInventory from "pixel-wars-protocol/definitions/packets/out/set-colour-inventory"
+import PacketOutConnected from "pixel-wars-protocol/definitions/packets/out/connected"
 
 export default class PixelWarsServer {
 
@@ -30,8 +34,11 @@ export default class PixelWarsServer {
       for (let i=0;i<players.length;i++) {
         const player = players[i]
 
-        if (player instanceof ConnectedPlayer)
-          this.connection?.emitSetPixel(player.getSocket(), x, y, pixel)
+        if (!(player instanceof ConnectedPlayer))
+          return
+
+        const packet = new PacketOutSetPixel(player.getSocket(), x, y, pixel)
+        packet.send()
       }
     })
   }
@@ -51,19 +58,23 @@ export default class PixelWarsServer {
     this.connection = new ConnectionHandler(this, port, ssl)
     this.connection.onConnection((socket: Socket) => {
       this.logger.info("New connection from " + socket.handshake.address)
-      socket.emit("pw-connected")
+    
+      const packet = new PacketOutConnected(socket)
+      packet.send()
     })
 
     this.connection.onPlayerJoin((player: ConnectedPlayer) => {
       this.core.addPlayer(player)
 
-      if (!this.connection)
-        return
+      this.getLogger().info("Player joined from " + player.getSocket().handshake.address)
 
       const socket = player.getSocket()
 
-      this.connection.emitSetPixelTypes(socket, this.core.getDefaultWorld().getPixelTypes())
-      this.connection.emitSetColourInventory(socket, player.getColourInventory())
+      const packet1 = new PacketOutSetPixelTypes(socket, this.core.getDefaultWorld().getPixelTypes())
+      const packet2 = new PacketOutSetColourInventory(socket, player.getColourInventory())
+      
+      packet1.send()
+      packet2.send()
     })
   }
 }

@@ -8,6 +8,7 @@ import MovementHandler from "./player/movement"
 import BuildingHandler from "./world/building"
 import Player from "pixel-wars-core/player"
 import type ConnectionHandler from "./connection"
+import PacketInJoin from "pixel-wars-protocol/definitions/packets/in/join"
 
 interface ClientOptions {
   pixelWarsCore?: PixelWarsCore,
@@ -54,7 +55,10 @@ export default class PixelWarsClient {
     if (this.connectionHandler) {
       this.connectionHandler.init(this)
       this.connectionHandler.onSuccess(() => {
-        this.connectionHandler?.emitJoin()
+        if (!this.connectionHandler)
+          return
+
+        new PacketInJoin(this.connectionHandler.getSocket()).send()
       })
     }
 
