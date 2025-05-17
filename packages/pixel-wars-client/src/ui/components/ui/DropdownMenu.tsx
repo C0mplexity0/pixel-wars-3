@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Button from "./Button"
 import Icon from "./Icon"
 import menuIcon from "../../assets/img/icon/menu.png"
@@ -7,6 +7,25 @@ import { twMerge } from "tailwind-merge"
 
 export default function DropdownMenu({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!open)
+      return
+
+    const listener = () => {
+      setOpen(false)
+    }
+
+    const timeout = setTimeout(() => {
+      window.addEventListener("click", listener)
+    }, 30)
+  
+    return () => {
+      clearTimeout(timeout)
+      window.removeEventListener("click", listener)
+    }
+  }, [open])
+  
   
   return (
     <div {...props}>
@@ -33,7 +52,7 @@ export default function DropdownMenu({ children, ...props }: React.HTMLAttribute
 
 export function DropdownMenuContent({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={twMerge("border-2 mt-2", className)} {...props}>
+    <div className={twMerge("border-2 mt-1", className)} {...props}>
       {children}
     </div>
   )
