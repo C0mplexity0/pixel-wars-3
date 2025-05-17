@@ -23,7 +23,7 @@ export default class MovementHandler {
   }
 
   update() {
-    if (Date.now() - this.lastMovement < 50) {
+    if (Date.now() - this.lastMovement < 80) {
       return
     }
 
