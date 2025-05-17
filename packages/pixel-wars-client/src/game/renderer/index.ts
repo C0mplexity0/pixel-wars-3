@@ -54,7 +54,7 @@ export default class Renderer {
     } else {
       const colour = pixelType.colour
 
-      if (!colour || colour === "#ffffff") {
+      if (!colour || colour == "#ffffff") {
         return
       }
 
