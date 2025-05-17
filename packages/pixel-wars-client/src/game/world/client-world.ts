@@ -109,4 +109,10 @@ export default class ClientWorld {
     this.textureCache[texture] = img
     return img
   }
+
+  getFileContent() {
+    const core = this.client.getSingleplayerCore()
+    if (core)
+      return core.getDefaultWorld().getFileContent()
+  }
 }

@@ -8,6 +8,7 @@ import DropdownMenu, { DropdownMenuButton, DropdownMenuContent } from "./compone
 import downloadIcon from "./assets/img/icon/download.png"
 import homeIcon from "./assets/img/icon/home.png"
 import Icon from "./components/ui/Icon";
+import fileDownload from "js-file-download";
 
 function Inventory() {
   const game = getClient()
@@ -105,7 +106,11 @@ export default function GameUi() {
           <DropdownMenuButton>
             <Icon src={homeIcon} /> <span className="h-5">Home</span>
           </DropdownMenuButton>
-          <DropdownMenuButton>
+          <DropdownMenuButton
+            onClick={() => {
+              fileDownload(JSON.stringify(game.getClientWorld().getFileContent()), "world.json")
+            }}
+          >
             <Icon src={downloadIcon} /> <span className="h-5">Download World</span>
           </DropdownMenuButton>
         </DropdownMenuContent>

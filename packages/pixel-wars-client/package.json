@@ -17,6 +17,7 @@
     "@stylistic/eslint-plugin-js": "^4.2.0",
     "@tailwindcss/vite": "^4.1.6",
     "gh-pages": "^6.3.0",
+    "js-file-download": "^0.4.12",
     "pixel-wars-core": "3.0.0",
     "pixel-wars-protocol": "^3.0.0",
     "react": "^19.1.0",

@@ -1,5 +1,6 @@
 import { Event, EventHandler, type Listener } from "../event";
 import WorldUtils from "./utils"
+import packageJson from "../package.json"
 
 export const CHUNK_SIZE = 16
 
@@ -171,5 +172,80 @@ export default class World {
 
   offPixelChange(callback: Listener<PixelChangeEvent>) {
     this.onPixelChangeEvent.removeListener(callback)
+  }
+
+  getFileContent() {
+    const pixels: {[x: string]: any}[] = []
+
+    const getMatchingPixel = (pixel: {[x: string]: any}) => {
+      for (let i=0;i<pixels.length;i++) {
+        const checkingPixel = pixels[i]
+
+        const checkingPixelProperties = Object.keys(checkingPixel)
+        const pixelProperties = Object.keys(pixel)
+
+        if (checkingPixelProperties.length !== pixelProperties.length)
+          continue
+
+        let propertiesMatch = true
+
+        for (let j=0;j<pixelProperties.length;j++) {
+          if (!checkingPixelProperties.includes(pixelProperties[j])) {
+            propertiesMatch = false
+            continue
+          }
+
+          checkingPixelProperties.splice(checkingPixelProperties.indexOf(pixelProperties[j]), 1)
+        }
+
+        if (!propertiesMatch)
+          continue
+
+        for (const property in pixel) {
+          if (pixel[property] !== checkingPixel[property]) {
+            propertiesMatch = false
+            continue
+          }
+        }
+
+        if (propertiesMatch)
+          return i
+      }
+    }
+
+    const chunks: {[id: string]: number[]} = {}
+    
+    for (const chunkId in this.world) {
+      const chunk = this.world[chunkId]
+      const formattedChunk: number[] = []
+
+      for (let y=0;y<chunk.length;y++) {
+        for (let x=0;x<chunk[y].length;x++) {
+          const pixel = chunk[y][x]
+          let matchingPixel = getMatchingPixel(pixel)
+          if (matchingPixel === undefined) {
+            matchingPixel = pixels.length
+            pixels.push(pixel)
+          }
+
+          formattedChunk.push(matchingPixel)
+        }
+      }
+
+      chunks[chunkId] = formattedChunk
+    }
+
+    const info = {
+      validPixelWarsWorldFile: true,
+      version: packageJson.version,
+      chunkSize: CHUNK_SIZE,
+      pixelTypes: this.getPixelTypes(),
+      pixels
+    }
+
+    return {
+      info,
+      chunks
+    }
   }
 }
