@@ -4,6 +4,10 @@ import { getClient } from "./main";
 import { ShiftKeyIndicator } from "./components/ui/KeyIndicator";
 import type { ColourInventoryUpdatedEvent } from "pixel-wars-core/player";
 import type { DebugModeToggleEvent } from "./game";
+import DropdownMenu, { DropdownMenuButton, DropdownMenuContent } from "./components/ui/DropdownMenu";
+import downloadIcon from "./assets/img/icon/download.png"
+import homeIcon from "./assets/img/icon/home.png"
+import Icon from "./components/ui/Icon";
 
 function Inventory() {
   const game = getClient()
@@ -96,6 +100,16 @@ export default function GameUi() {
       {
         buildKeyTipEnabled ? <BuildKeyTip /> : null
       }
+      <DropdownMenu className="absolute top-2 left-2">
+        <DropdownMenuContent>
+          <DropdownMenuButton>
+            <Icon src={homeIcon} /> <span className="h-5">Home</span>
+          </DropdownMenuButton>
+          <DropdownMenuButton>
+            <Icon src={downloadIcon} /> <span className="h-5">Download World</span>
+          </DropdownMenuButton>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }
