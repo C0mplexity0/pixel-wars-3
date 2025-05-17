@@ -106,6 +106,7 @@ cmd
 
         for (let y=0;y<CHUNK_SIZE;y++) {
           for (let x=0;x<CHUNK_SIZE;x++) {
+            // PW2 has a bug where certain pixels are stored in the wrong chunk if the chunk coordinates are negative, this puts those pixels in the correct chunks again so that PW3 reads them correctly
             const xBroken = chunkX < 0 && x === 0
             const yBroken = chunkY < 0 && y === 0
 
