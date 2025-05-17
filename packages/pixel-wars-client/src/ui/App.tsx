@@ -8,19 +8,25 @@ import singleplayerButtonDefault from "./assets/img/singleplayer-button-default.
 import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spritesheet.png"
 import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.png"
 import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.png"
-import { initialised, initSingleplayer, offPixelWarsEnd, offPixelWarsInit, onPixelWarsEnd, onPixelWarsInit } from "../main"
+import { initialised, offPixelWarsEnd, offPixelWarsInit, onPixelWarsEnd, onPixelWarsInit } from "../main"
 import MultiplayerMenu from "./components/menu/MultiplayerMenu"
+import GamemodeMenu from "./components/menu/GamemodeMenu"
 
 function Menu() {
+  const [singleplayerMenuOpen, setSingleplayerMenuOpen] = useState(false)
   const [multiplayerMenuOpen, setMultiplayerMenuOpen] = useState(false)
+
+  if (singleplayerMenuOpen && multiplayerMenuOpen)
+    throw new Error("Both the singleplayer and multiplayer menus are open (?)")
 
   return (
     <div className="size-full">
       {
-        multiplayerMenuOpen ?
+        singleplayerMenuOpen || multiplayerMenuOpen ?
         <button 
           className="absolute z-2 top-2 left-2 cursor-pointer"
           onClick={() => {
+            setSingleplayerMenuOpen(false)
             setMultiplayerMenuOpen(false)
           }}
         >Back to Menu</button>
@@ -28,8 +34,8 @@ function Menu() {
       }
       <div className="size-full absolute flex items-center justify-center">
         {
-          multiplayerMenuOpen ?
-          <MultiplayerMenu /> :
+          singleplayerMenuOpen || multiplayerMenuOpen ?
+          singleplayerMenuOpen ? <GamemodeMenu /> : <MultiplayerMenu /> :
           <div className="w-200 flex flex-col items-center justify-center gap-2">
           <PixelatedImg className="w-100 pb-8" src={logoBlack} alt="PIXEL WARS Logo" />
 
@@ -41,7 +47,7 @@ function Menu() {
             alt="Singleplayer Button Image"
             aria-label="Singleplayer Button"
             onClick={() => {
-              initSingleplayer()
+              setSingleplayerMenuOpen(true)
             }}
           />
 
