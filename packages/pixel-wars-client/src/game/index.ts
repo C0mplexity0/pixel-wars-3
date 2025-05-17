@@ -45,6 +45,8 @@ export class DebugModeToggleEvent extends Event {
 }
 
 export default class PixelWarsClient {
+  private running: boolean
+
   private pixelWarsCore?: PixelWarsCore
   private connectionHandler?: ConnectionHandler
 
@@ -70,6 +72,8 @@ export default class PixelWarsClient {
       throw new Error("Both the PIXEL WARS CORE and a connection handler have been passed to the client. Only one should be passed (the core if in singleplayer, and the connection handler if in multiplayer).")
 
     console.info("STARTING PIXEL WARS CLIENT")
+
+    this.running = true
 
     if (!options)
       options = {}
@@ -123,6 +127,15 @@ export default class PixelWarsClient {
     }, 0)
   }
 
+  end() {
+    this.running = false
+
+    if (this.connectionHandler)
+      this.connectionHandler.disconnect()
+
+    this.renderer.clearCanvas()
+  }
+
   #sendDebugModeToggleEvent() {
     const event = new DebugModeToggleEvent(this.debugModeEnabled)
     this.onDebugModeToggleEvent.fire(event)
@@ -145,6 +158,9 @@ export default class PixelWarsClient {
   }
 
   #update() {
+    if (!this.running)
+      return
+
     const now = Date.now()
     const deltaTime = now - this.lastUpdate
     this.lastUpdate = now

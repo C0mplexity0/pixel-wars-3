@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Debug from "./debug/Debug";
-import { getClient } from "./main";
+import { endGame, getClient } from "./main";
 import { ShiftKeyIndicator } from "./components/ui/KeyIndicator";
 import type { ColourInventoryUpdatedEvent } from "pixel-wars-core/player";
 import type { DebugModeToggleEvent } from "./game";
@@ -12,10 +12,13 @@ import fileDownload from "js-file-download";
 
 function Inventory() {
   const game = getClient()
-  const [selectedColour, setSelectedColour] = useState(game.getPlayer().getSelectedColour())
-  const [colours, setColours] = useState(game.getPlayer().getColourInventory())
+  const [selectedColour, setSelectedColour] = useState(game ? game.getPlayer().getSelectedColour() : 0)
+  const [colours, setColours] = useState(game ? game.getPlayer().getColourInventory() : [])
 
   useEffect(() => {
+    if (!game)
+      return
+
     const callback = (event: ColourInventoryUpdatedEvent) => {
       const colourInventory = event.getColourInventory()
       const selectedColour = event.getSelectedColour()
@@ -29,6 +32,9 @@ function Inventory() {
       game.getPlayer().offColourInventoryUpdated(callback)
     }
   })
+
+  if (!game)
+    return
 
   return (
     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-primary flex flex-row gap-2 p-2">
@@ -67,10 +73,13 @@ function BuildKeyTip() {
 
 export default function GameUi() {
   const game = getClient()
-  const [debugModeEnabled, setDebugModeEnabled] = useState(game.inDebugMode())
+  const [debugModeEnabled, setDebugModeEnabled] = useState(game ? game.inDebugMode() : false)
   const [buildKeyTipEnabled, setBuildKeyTipEnabled] = useState(true)
 
   useEffect(() => {
+    if (!game)
+      return
+
     const debugModeToggleCallback = (event: DebugModeToggleEvent) => {
       setDebugModeEnabled(event.debugModeEnabled())
     }
@@ -92,6 +101,9 @@ export default function GameUi() {
     }
   })
 
+  if (!game)
+    return
+
   return (
     <div className="relative size-full">
       {
@@ -103,7 +115,11 @@ export default function GameUi() {
       }
       <DropdownMenu className="absolute top-2 left-2">
         <DropdownMenuContent>
-          <DropdownMenuButton>
+          <DropdownMenuButton
+            onClick={() => {
+              endGame()
+            }}
+          >
             <Icon src={homeIcon} /> <span className="h-5">Home</span>
           </DropdownMenuButton>
           <DropdownMenuButton

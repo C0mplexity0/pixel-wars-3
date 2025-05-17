@@ -17,11 +17,12 @@ export class MultiplayerConnectionChangeEvent extends Event {
 }
 
 const initEvent = new EventHandler<Event>()
+const endEvent = new EventHandler<Event>()
 const multiplayerConnectionMessageEvent = new EventHandler<MultiplayerConnectionChangeEvent>()
 const multiplayerConnectionFailureEvent = new EventHandler<MultiplayerConnectionChangeEvent>()
 
-let core: PixelWarsCore
-let client: PixelWarsClient
+let core: PixelWarsCore | undefined
+let client: PixelWarsClient | undefined
 
 export function getClient() {
   return client
@@ -98,9 +99,27 @@ export function offPixelWarsInit(callback: () => void) {
   initEvent.removeListener(callback)
 }
 
+export function onPixelWarsEnd(callback: () => void) {
+  endEvent.addListener(callback)
+}
+
+export function offPixelWarsEnd(callback: () => void) {
+  endEvent.removeListener(callback)
+}
+
 export function initialised() {
   if (core || client)
     return true
 
   return false
+}
+
+export function endGame() {
+  if (client)
+    client.end()
+
+  client = undefined
+  core = undefined
+
+  endEvent.fire(new Event())
 }

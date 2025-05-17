@@ -100,6 +100,10 @@ export default class Renderer {
       extraRenderers[i].render(this, scale)
     }
   }
+
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+  }
 }
 
 export interface NonPixelRenderer {
