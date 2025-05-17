@@ -1,5 +1,5 @@
 import LocalPlayer from "./player/local-player"
-import Renderer, { VISIBLE_PIXEL_RADIUS } from "./renderer"
+import Renderer, { VISIBLE_PIXEL_RADIUS, type NonPixelRenderer } from "./renderer"
 import ClientWorld from "./world/client-world"
 import type PixelWarsCore from "pixel-wars-core"
 import ControlsHandler from "./player/controls"
@@ -9,6 +9,7 @@ import Player from "pixel-wars-core/player"
 import type ConnectionHandler from "./connection"
 import PacketInJoin from "pixel-wars-protocol/definitions/packets/in/join"
 import { Event, EventHandler, type Listener } from "pixel-wars-core/event"
+import DebugRenderer from "./debug/debug-renderer"
 
 interface ClientOptions {
   pixelWarsCore?: PixelWarsCore,
@@ -48,6 +49,7 @@ export default class PixelWarsClient {
   private connectionHandler?: ConnectionHandler
 
   private debugModeEnabled: boolean
+  private debugRenderer: DebugRenderer
 
   private canvas: HTMLCanvasElement
 
@@ -91,6 +93,7 @@ export default class PixelWarsClient {
     }
 
     this.debugModeEnabled = false
+    this.debugRenderer = new DebugRenderer(this)
     
     this.canvas = canvas
 
@@ -146,7 +149,12 @@ export default class PixelWarsClient {
     const deltaTime = now - this.lastUpdate
     this.lastUpdate = now
 
-    this.renderer.render(this.#getRegionForRendering(), [this.player, this.buildingHandler])
+    const renderers: NonPixelRenderer[] = [this.player, this.buildingHandler]
+
+    if (this.inDebugMode())
+      renderers.push(this.debugRenderer)
+
+    this.renderer.render(this.#getRegionForRendering(), renderers)
 
     this.movementHandler.update()
 
