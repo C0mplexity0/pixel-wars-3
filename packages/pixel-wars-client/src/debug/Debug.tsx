@@ -12,6 +12,9 @@ export default function Debug() {
   useEffect(() => {
     const game = getClient()
 
+    if (!game)
+      return
+
     const callback = (event: UpdateEvent) => {
       const deltaTime = event.getDeltaTime()
       setFps(Math.floor(1000/deltaTime))
