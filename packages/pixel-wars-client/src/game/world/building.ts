@@ -66,7 +66,7 @@ export default class BuildingHandler implements NonPixelRenderer {
     const centre = this.game.getRenderer().getCanvasCentre()
 
     ctx.strokeStyle = "#333333"
-    ctx.lineWidth = 2
+    ctx.lineWidth = Math.ceil(.1 * scale)
     ctx.beginPath()
     ctx.rect(centre[0] + (xOffset * scale) - scale/2, centre[1] + (yOffset * scale) - scale/2, scale, scale)
     ctx.stroke()
