@@ -1,0 +1,14 @@
+{
+  "name": "convert-pixel-wars-world",
+  "version": "3.0.0",
+  "scripts": {
+    "patch-release": "npm version patch && npm publish && git push --follow-tags"
+  },
+  "bin": {
+    "convert-pixel-wars-world": "./cli.js"
+  },
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "type": "module"
+}

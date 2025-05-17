@@ -50,7 +50,19 @@ export default class ClientWorld {
     const [chunkX, chunkY] = WorldUtils.getChunkFromPixelPos(x, y)
     const [xInChunk, yInChunk] = WorldUtils.getPosInChunkFromPixelPos(x, y)
 
-    return this.getChunk(chunkX, chunkY)[yInChunk][xInChunk]
+    const pixel = this.getChunk(chunkX, chunkY)[yInChunk][xInChunk]
+
+    if (!pixel) {
+      console.log(pixel)
+      console.log(x)
+      console.log(y)
+      console.log(chunkX)
+      console.log(chunkY)
+      console.log(xInChunk)
+      console.log(yInChunk)
+    }
+
+    return pixel
   }
 
   setPixel(x: number, y: number, pixel: WorldPixel) {

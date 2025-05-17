@@ -20,6 +20,7 @@
     "packages/pixel-wars-core", 
     "packages/pixel-wars-server",
     "packages/pixel-wars-server-example",
-    "packages/pixel-wars-protocol"
+    "packages/pixel-wars-protocol",
+    "packages/convert-pixel-wars-world"
   ]
 }
