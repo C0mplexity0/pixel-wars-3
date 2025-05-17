@@ -6,9 +6,11 @@ import type { ColourInventoryUpdatedEvent } from "pixel-wars-core/player";
 import type { DebugModeToggleEvent } from "../game";
 import DropdownMenu, { DropdownMenuButton, DropdownMenuContent } from "./components/ui/DropdownMenu";
 import downloadIcon from "./assets/img/icon/download.png"
+import uploadIcon from "./assets/img/icon/upload.png"
 import homeIcon from "./assets/img/icon/home.png"
 import Icon from "./components/ui/Icon";
 import fileDownload from "js-file-download";
+import WorldUtils from "pixel-wars-core/world/utils";
 
 function Inventory() {
   const game = getClient()
@@ -127,7 +129,45 @@ export default function GameUi() {
               fileDownload(JSON.stringify(game.getClientWorld().getFileContent()), "world.json")
             }}
           >
-            <Icon src={downloadIcon} /> <span className="h-5">Download World</span>
+            <Icon src={downloadIcon} /> <span className="h-5">Save World</span>
+          </DropdownMenuButton>
+          <DropdownMenuButton
+            onClick={() => {
+              const core = game.getSingleplayerCore()
+              if (!core)
+                return
+
+              const filePrompt = document.createElement("input")
+              filePrompt.type = "file"
+              
+              const existingPrompt = document.getElementById("filePrompt")
+              if (existingPrompt)
+                existingPrompt.remove()
+
+              filePrompt.id = "filePrompt"
+              filePrompt.style.display = "none"
+              filePrompt.accept = "application/JSON"
+              document.body.appendChild(filePrompt)
+              filePrompt.click()
+
+              filePrompt.addEventListener("change", async () => {
+                if (!filePrompt.files)
+                  return
+
+                const core = game.getSingleplayerCore()
+                if (!core)
+                  return
+
+                filePrompt.remove()
+
+                const file = filePrompt.files[0]
+                const text = await file.text()
+
+                WorldUtils.importFile(core, text)
+              })
+            }}
+          >
+            <Icon src={uploadIcon} /> <span className="h-5">Import World</span>
           </DropdownMenuButton>
         </DropdownMenuContent>
       </DropdownMenu>

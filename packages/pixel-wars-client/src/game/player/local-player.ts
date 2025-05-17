@@ -34,6 +34,15 @@ export default class LocalPlayer implements NonPixelRenderer {
       this.colourId = player.getColourId()
       this.position = player.getPosition()
       this.colourInventory = player.getColourInventory()
+
+      player.onWorldChange(() => {
+        this.client.getClientWorld().reset()
+      })
+
+      player.onPositionChange((event) => {
+        const [x, y] = event.getNewPosition()
+        this.setPosition(x, y)
+      })
     }
 
     window.addEventListener("keyup", (event) => {

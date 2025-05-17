@@ -21,6 +21,19 @@ export class WorldChangeEvent extends Event {
   }
 }
 
+export class PositionChangeEvent extends Event {
+  private newPos: number[]
+
+  constructor(newPos: number[]) {
+    super()
+    this.newPos = newPos
+  }
+
+  getNewPosition() {
+    return this.newPos
+  }
+}
+
 export class ColourInventoryUpdatedEvent extends Event {
 
   private colourInventory: number[]
@@ -51,6 +64,7 @@ export default class Player {
 
   private onWorldChangeEvent: EventHandler<WorldChangeEvent>
   private onColourInventoryUpdatedEvent: EventHandler<ColourInventoryUpdatedEvent>
+  private onPositionChangeEvent: EventHandler<PositionChangeEvent>
 
   constructor(core: PixelWarsCore) {
     this.position = [0, 0]
@@ -64,6 +78,7 @@ export default class Player {
     this.selectedColour = 0
 
     this.onColourInventoryUpdatedEvent = new EventHandler()
+    this.onPositionChangeEvent = new EventHandler()
   }
 
   getPosition() {
@@ -71,14 +86,28 @@ export default class Player {
   }
 
   setPosition(x: number, y: number) {
+    if (this.position[0] === x && this.position[1] === y)
+      return
+
     this.position = [x, y]
+    this.onPositionChangeEvent.fire(new PositionChangeEvent(this.position))
   }
 
   setWorld(world: World) {
     this.world = world
+   
+    this.setPosition(0, 0)
 
     const event = new WorldChangeEvent(world)
     this.onWorldChangeEvent.fire(event)    
+  }
+
+  onPositionChange(callback: Listener<PositionChangeEvent>) {
+    this.onPositionChangeEvent.addListener(callback)
+  }
+
+  offPositionChange(callback: Listener<PositionChangeEvent>) {
+    this.onPositionChangeEvent.removeListener(callback)
   }
 
   onWorldChange(callback: Listener<WorldChangeEvent>) {

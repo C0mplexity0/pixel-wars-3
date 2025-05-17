@@ -15,6 +15,19 @@ export interface PixelType {
   texture?: string
 }
 
+export interface PixelWarsWorldFile {
+  info: {
+    validPixelWarsWorldFile: true,
+    version: string,
+    chunkSize: number,
+    pixelTypes: PixelType[],
+    pixels: WorldPixel[]
+  },
+  chunks: {
+    [chunkId: string]: number[]
+  }
+}
+
 class PixelChangeEvent extends Event {
 
   private pos: number[]
@@ -140,6 +153,11 @@ export default class World {
     return chunk
   }
 
+  setChunk(x: number, y: number, chunk: WorldPixel[][]) {
+    const chunkId = WorldUtils.getChunkId(x, y)
+    this.world[chunkId] = chunk
+  }
+
   getPixel(x: number, y: number) {
     const [chunkX, chunkY] = WorldUtils.getChunkFromPixelPos(x, y)
     const [xInChunk, yInChunk] = WorldUtils.getPosInChunkFromPixelPos(x, y)
@@ -247,5 +265,58 @@ export default class World {
       info,
       chunks
     }
+  }
+
+  static fromFileContent(json: PixelWarsWorldFile) {
+    const world = new World()
+
+    const info = json.info
+    const chunks = json.chunks
+    const pixels = info.pixels
+
+    for (const chunkId in chunks) {
+      const compressedChunk: number[] = chunks[chunkId]
+      const chunk: WorldPixel[][] = []
+
+      for (let y=0;y<info.chunkSize;y++) {
+        const row: WorldPixel[] = []
+        for (let x=0;x<info.chunkSize;x++) {
+          row.push(pixels[compressedChunk[(16 * y) + x]])
+        }
+        chunk.push(row)
+      }
+
+      const [x, y] = WorldUtils.getPosFromChunkId(chunkId)
+      world.setChunk(x, y, chunk)
+    }
+
+    return world
+  }
+
+  static validateFileContent(json: any) {
+    if (!(json instanceof Object))
+      return false
+
+
+    if (!json.info || !json.chunks)
+      return false
+
+    const info = json.info
+
+    if (!(info instanceof Object))
+      return false
+
+    if (!info.chunkSize || !info.pixelTypes || !info.pixels || !info.validPixelWarsWorldFile || !info.version)
+      return false
+
+    if (info.version != packageJson.version)
+      return false
+
+    const chunks = json.chunks
+
+    if (!(chunks instanceof Object))
+      return false
+
+    return true
   }
 }

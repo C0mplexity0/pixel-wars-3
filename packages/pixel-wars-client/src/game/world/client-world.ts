@@ -115,4 +115,14 @@ export default class ClientWorld {
     if (core)
       return core.getDefaultWorld().getFileContent()
   }
+
+  reset() {
+    this.world = {}
+    this.textureCache = {}
+    this.pixelTypes = [
+      {
+        colour: "#ffffff"
+      }
+    ]
+  }
 }

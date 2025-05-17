@@ -35,6 +35,27 @@ export default class PixelWarsCore {
     return this.worlds[0]
   }
 
+  addWorld(world: World) {
+    this.worlds.push(world)
+  }
+
+  removeWorld(world: World) {
+    const i = this.worlds.indexOf(world)
+
+    if (i >= 0)
+      this.worlds.splice(i, 1)
+
+    if (!this.getDefaultWorld())
+      this.createDefaultWorld()
+
+    const defaultWorld = this.getDefaultWorld()
+
+    for (let i=0;i<this.players.length;i++) {
+      if (this.players[i].getWorld() === world)
+        this.players[i].setWorld(defaultWorld)
+    }
+  }
+
   addPlayer(player: Player) {
     this.players.push(player)
   }

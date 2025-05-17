@@ -1,4 +1,5 @@
-import { CHUNK_SIZE, type WorldPixel } from "."
+import World, { CHUNK_SIZE, type WorldPixel } from "."
+import type PixelWarsCore from ".."
 
 export default class WorldUtils {
   static getChunkFromPixelPos(x: number, y: number) {
@@ -27,6 +28,12 @@ export default class WorldUtils {
     return `${x},${y}`
   }
 
+  static getPosFromChunkId(id: string) {
+    const parts = id.split(",")
+
+    return [parseInt(parts[0]), parseInt(parts[1])]
+  }
+
   static createBlankChunk() {
     const chunk: WorldPixel[][] = []
     
@@ -42,5 +49,18 @@ export default class WorldUtils {
     }
 
     return chunk
+  }
+
+  static importFile(core: PixelWarsCore, file: string) {
+    try {
+      const json = JSON.parse(file)
+      if (!World.validateFileContent(json))
+        return
+
+      core.addWorld(World.fromFileContent(json))
+      core.removeWorld(core.getDefaultWorld())
+    } catch(err) {
+      console.warn(err)
+    }
   }
 }
