@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Debug from "./debug/Debug";
-import { endGame, getClient } from "./main";
+import { endGame, getClient } from "../main";
 import { ShiftKeyIndicator } from "./components/ui/KeyIndicator";
 import type { ColourInventoryUpdatedEvent } from "pixel-wars-core/player";
-import type { DebugModeToggleEvent } from "./game";
+import type { DebugModeToggleEvent } from "../game";
 import DropdownMenu, { DropdownMenuButton, DropdownMenuContent } from "./components/ui/DropdownMenu";
 import downloadIcon from "./assets/img/icon/download.png"
 import homeIcon from "./assets/img/icon/home.png"

@@ -8,7 +8,7 @@ import singleplayerButtonDefault from "./assets/img/singleplayer-button-default.
 import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spritesheet.png"
 import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.png"
 import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.png"
-import { initialised, initSingleplayer, offPixelWarsEnd, offPixelWarsInit, onPixelWarsEnd, onPixelWarsInit } from "./main"
+import { initialised, initSingleplayer, offPixelWarsEnd, offPixelWarsInit, onPixelWarsEnd, onPixelWarsInit } from "../main"
 import MultiplayerMenu from "./components/menu/MultiplayerMenu"
 
 function Menu() {

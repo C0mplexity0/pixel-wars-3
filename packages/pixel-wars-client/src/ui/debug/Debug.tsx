@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { getClient } from "../main"
-import type { UpdateEvent } from "../game"
+import { getClient } from "../../main"
+import type { UpdateEvent } from "../../game"
 import WorldUtils from "pixel-wars-core/world/utils"
 
 export default function Debug() {
