@@ -5,7 +5,7 @@ import Button from "../components/ui/Button"
 import Icon from "../components/ui/Icon"
 import ellipsisLargeIcon from "../assets/img/icon/ellipsis-large.png"
 
-function GameInventoryExtraMenu({ colours }: { colours: number[] }) {
+function GameInventoryExtraMenu({ pixels }: { pixels: number[] }) {
   const game = getClient()
   
   if (!game)
@@ -13,7 +13,7 @@ function GameInventoryExtraMenu({ colours }: { colours: number[] }) {
   
   return (
     <div className="left-0 border-2 bg-white p-2 flex flex-wrap gap-2 w-103">
-      {colours.map((value, i) => {
+      {pixels.map((value, i) => {
         if (i < 9)
           return
 
@@ -51,7 +51,7 @@ function GameInventoryExtraMenu({ colours }: { colours: number[] }) {
 export default function GameInventory() {
   const game = getClient()
   const [selectedPixel, setSelectedPixel] = useState(game ? game.getPlayer().getSelectedPixel() : 0)
-  const [colours, setColours] = useState(game ? game.getPlayer().getPixelInventory() : [])
+  const [pixels, setPixels] = useState(game ? game.getPlayer().getPixelInventory() : [])
   const [extraMenuOpen, setExtraMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function GameInventory() {
       const pixelInventory = event.getPixelInventory()
       const selectedPixel = event.getSelectedPixel()
       setSelectedPixel(selectedPixel)
-      setColours(pixelInventory)
+      setPixels(pixelInventory)
     }
 
     game.getPlayer().onPixelInventoryUpdated(callback)
@@ -75,10 +75,13 @@ export default function GameInventory() {
   if (!game)
     return
 
+  if (pixels.length === 0)
+    return
+
   return (
     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col-reverse gap-1">
       <div className="bg-white border-2 flex flex-row gap-2 p-2">
-        {colours.map((value, i) => {
+        {pixels.map((value, i) => {
           if (i >= 9)
             return
 
@@ -101,7 +104,7 @@ export default function GameInventory() {
           ></Button>
         })}
         {
-          colours.length >= 9 ?
+          pixels.length >= 9 ?
           <Button 
             className="size-8 p-0 cursor-pointer"
             onClick={() => {
@@ -115,7 +118,7 @@ export default function GameInventory() {
       </div>
       {
         extraMenuOpen ?
-        <GameInventoryExtraMenu colours={colours} /> : null
+        <GameInventoryExtraMenu pixels={pixels} /> : null
       }
     </div>
   )
