@@ -56,10 +56,14 @@ export default class BuildingHandler implements NonPixelRenderer {
   }
 
   #renderPixelBuildableIndicator(renderer: Renderer, x: number, y: number, xOffset: number, yOffset: number, scale: number) {
+    const player = this.game.getPlayer()
+
+    if (player.getPixelInventory().length < 1)
+      return
+
     const ctx = renderer.getContext()
     const pixel = this.game.getClientWorld().getPixel(x, y)
     const pixelTypes = this.game.getClientWorld().getPixelTypes()
-    const player = this.game.getPlayer()
 
     if (pixel.buildingDisabled) {
       return
