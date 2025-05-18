@@ -20,6 +20,19 @@ export class SettingsUpdatedEvent extends Event {
   }
 }
 
+export class PlayerAddedEvent extends Event {
+  private player: Player
+
+  constructor(player: Player) {
+    super()
+    this.player = player
+  }
+
+  getPlayer() {
+    return this.player
+  }
+}
+
 export default class PixelWarsCore {
   private inMultiplayer: boolean
 
@@ -29,6 +42,7 @@ export default class PixelWarsCore {
   private players: Player[]
 
   private onSettingsUpdatedEvent: EventHandler<SettingsUpdatedEvent>
+  private onPlayerAddedEvent: EventHandler<PlayerAddedEvent>
 
   constructor(inMultiplayer?: boolean) {
     console.info("STARTING PIXEL WARS CORE")
@@ -50,6 +64,7 @@ export default class PixelWarsCore {
     this.players = []
 
     this.onSettingsUpdatedEvent = new EventHandler()
+    this.onPlayerAddedEvent = new EventHandler()
   }
 
   static getDefaultSettings(): PixelWarsCoreSettings {
@@ -104,12 +119,21 @@ export default class PixelWarsCore {
 
     player.setWorld(world)
     this.players.push(player)
+    this.onPlayerAddedEvent.fire(new PlayerAddedEvent(player))
   }
 
   removePlayer(player: Player) {
     const i = this.players.indexOf(player)
     if (i >= 0)
       this.players.splice(i, 1)
+  }
+
+  onPlayerAdded(callback: Listener<PlayerAddedEvent>) {
+    this.onPlayerAddedEvent.addListener(callback)
+  }
+
+  offPlayerAdded(callback: Listener<PlayerAddedEvent>) {
+    this.onPlayerAddedEvent.addListener(callback)
   }
 
   getPlayers() {

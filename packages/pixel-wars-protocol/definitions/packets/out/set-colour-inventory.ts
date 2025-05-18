@@ -1,9 +1,9 @@
 import type { Server, Socket } from "socket.io";
 import PacketOut from "../packet-out";
 
-export default class PacketOutSetColourInventory extends PacketOut {
+export default class PacketOutSetPixelInventory extends PacketOut {
 
-  constructor(receiver: Socket | Server, colourInventory: number[]) {
-    super("setColourInventory", [colourInventory], receiver)
+  constructor(receiver: Socket | Server, pixelInventory: number[]) {
+    super("setPixelInventory", [pixelInventory], receiver)
   }
 }

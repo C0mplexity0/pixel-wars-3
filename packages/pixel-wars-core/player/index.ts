@@ -34,19 +34,19 @@ export class PositionChangeEvent extends Event {
   }
 }
 
-export class ColourInventoryUpdatedEvent extends Event {
+export class PixelInventoryUpdatedEvent extends Event {
 
-  private colourInventory: number[]
+  private pixelInventory: number[]
   private selectedColour: number
 
-  constructor(colourInventory: number[], selectedColour: number) {
+  constructor(pixelInventory: number[], selectedColour: number) {
     super()
-    this.colourInventory = colourInventory
+    this.pixelInventory = pixelInventory
     this.selectedColour = selectedColour
   }
 
-  getColourInventory() {
-    return this.colourInventory
+  getPixelInventory() {
+    return this.pixelInventory
   }
 
   getSelectedColour() {
@@ -59,13 +59,13 @@ export default class Player {
 
   protected position: number[]
   protected colourId: number
-  private colourInventory: number[]
+  private pixelInventory: number[]
   private selectedColour: number
 
   private world: World
 
   private onWorldChangeEvent: EventHandler<WorldChangeEvent>
-  private onColourInventoryUpdatedEvent: EventHandler<ColourInventoryUpdatedEvent>
+  private onPixelInventoryUpdatedEvent: EventHandler<PixelInventoryUpdatedEvent>
   private onPositionChangeEvent: EventHandler<PositionChangeEvent>
 
   constructor(core: PixelWarsCore) {
@@ -78,10 +78,10 @@ export default class Player {
 
     this.onWorldChangeEvent = new EventHandler()
 
-    this.colourInventory = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    this.pixelInventory = []
     this.selectedColour = 0
 
-    this.onColourInventoryUpdatedEvent = new EventHandler()
+    this.onPixelInventoryUpdatedEvent = new EventHandler()
     this.onPositionChangeEvent = new EventHandler()
   }
 
@@ -131,16 +131,24 @@ export default class Player {
     return this.world
   }
 
-  getColourInventory() {
-    return this.colourInventory
+  getPixelInventory() {
+    return this.pixelInventory
   }
 
-  onColourInventoryUpdated(callback: Listener<ColourInventoryUpdatedEvent>) {
-    this.onColourInventoryUpdatedEvent.addListener(callback)
+  setPixelInventory(pixelInventory: number[]) {
+    if (this.selectedColour >= pixelInventory.length)
+      this.selectedColour = pixelInventory.length-1
+
+    this.pixelInventory = pixelInventory
+    this.onPixelInventoryUpdatedEvent.fire(new PixelInventoryUpdatedEvent(pixelInventory, this.selectedColour))
   }
 
-  offColourInventoryUpdated(callback: Listener<ColourInventoryUpdatedEvent>) {
-    this.onColourInventoryUpdatedEvent.removeListener(callback)
+  onPixelInventoryUpdated(callback: Listener<PixelInventoryUpdatedEvent>) {
+    this.onPixelInventoryUpdatedEvent.addListener(callback)
+  }
+
+  offPixelInventoryUpdated(callback: Listener<PixelInventoryUpdatedEvent>) {
+    this.onPixelInventoryUpdatedEvent.removeListener(callback)
   }
 
   getSelectedColour() {
@@ -149,8 +157,8 @@ export default class Player {
 
   setSelectedColour(newColour: number) {
     this.selectedColour = newColour
-    const event = new ColourInventoryUpdatedEvent(this.colourInventory, this.selectedColour)
-    this.onColourInventoryUpdatedEvent.fire(event)
+    const event = new PixelInventoryUpdatedEvent(this.pixelInventory, this.selectedColour)
+    this.onPixelInventoryUpdatedEvent.fire(event)
   }
 
   getColourId() {

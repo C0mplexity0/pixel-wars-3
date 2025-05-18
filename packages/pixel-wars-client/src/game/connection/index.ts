@@ -48,8 +48,8 @@ export default class ConnectionHandler {
       client.getClientWorld().setPixelTypes(pixelTypes)
     })
 
-    this.socket.on(PACKET_PREFIX + "setColourInventory", (colourInventory: number[]) => {
-      client.getPlayer().setColourInventory(colourInventory)
+    this.socket.on(PACKET_PREFIX + "setPixelInventory", (pixelInventory: number[]) => {
+      client.getPlayer().setPixelInventory(pixelInventory)
     })
 
     this.socket.on(PACKET_PREFIX + "setPixel", (x: number, y: number, pixel: WorldPixel) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Debug from "./debug/Debug";
 import { endGame, getClient } from "../main";
 import { ShiftKeyIndicator } from "./components/ui/KeyIndicator";
-import type { ColourInventoryUpdatedEvent } from "pixel-wars-core/player";
+import type { PixelInventoryUpdatedEvent } from "pixel-wars-core/player";
 import type { DebugModeToggleEvent } from "../game";
 import DropdownMenu, { DropdownMenuButton, DropdownMenuContent } from "./components/ui/DropdownMenu";
 import downloadIcon from "./assets/img/icon/download.png"
@@ -17,23 +17,23 @@ import type { SettingsUpdatedEvent } from "pixel-wars-core";
 function Inventory() {
   const game = getClient()
   const [selectedColour, setSelectedColour] = useState(game ? game.getPlayer().getSelectedColour() : 0)
-  const [colours, setColours] = useState(game ? game.getPlayer().getColourInventory() : [])
+  const [colours, setColours] = useState(game ? game.getPlayer().getPixelInventory() : [])
 
   useEffect(() => {
     if (!game)
       return
 
-    const callback = (event: ColourInventoryUpdatedEvent) => {
-      const colourInventory = event.getColourInventory()
+    const callback = (event: PixelInventoryUpdatedEvent) => {
+      const pixelInventory = event.getPixelInventory()
       const selectedColour = event.getSelectedColour()
       setSelectedColour(selectedColour)
-      setColours(colourInventory)
+      setColours(pixelInventory)
     }
 
-    game.getPlayer().onColourInventoryUpdated(callback)
+    game.getPlayer().onPixelInventoryUpdated(callback)
 
     return () => {
-      game.getPlayer().offColourInventoryUpdated(callback)
+      game.getPlayer().offPixelInventoryUpdated(callback)
     }
   })
 

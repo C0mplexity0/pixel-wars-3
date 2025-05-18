@@ -2,7 +2,7 @@ import { EventHandler, type Listener } from "pixel-wars-core/event";
 import type PixelWarsClient from "..";
 import type Renderer from "../renderer";
 import type { NonPixelRenderer } from "../renderer";
-import { ColourInventoryUpdatedEvent, PLAYER_COLOURS } from "pixel-wars-core/player";
+import { PixelInventoryUpdatedEvent, PLAYER_COLOURS } from "pixel-wars-core/player";
 
 export default class LocalPlayer implements NonPixelRenderer {
   private client: PixelWarsClient
@@ -11,20 +11,20 @@ export default class LocalPlayer implements NonPixelRenderer {
 
   private position: number[]
 
-  private colourInventory: number[]
+  private pixelInventory: number[]
   private selectedColour: number
 
-  private onColourInventoryUpdatedEvent: EventHandler<ColourInventoryUpdatedEvent>
+  private onPixelInventoryUpdatedEvent: EventHandler<PixelInventoryUpdatedEvent>
 
   constructor(client: PixelWarsClient) {
     this.colourId = 0
     
     this.position = [0, 0]
 
-    this.colourInventory = []
+    this.pixelInventory = []
     this.selectedColour = 0
 
-    this.onColourInventoryUpdatedEvent = new EventHandler()
+    this.onPixelInventoryUpdatedEvent = new EventHandler()
 
     this.client = client
     
@@ -33,7 +33,7 @@ export default class LocalPlayer implements NonPixelRenderer {
       const player = singleplayerCore.getPlayers()[0]
       this.colourId = player.getColourId()
       this.position = player.getPosition()
-      this.colourInventory = player.getColourInventory()
+      this.pixelInventory = player.getPixelInventory()
 
       player.onWorldChange(() => {
         this.client.getClientWorld().reset()
@@ -48,15 +48,15 @@ export default class LocalPlayer implements NonPixelRenderer {
     window.addEventListener("keyup", (event) => {
       const id = parseInt(event.key)
       
-      if (id && this.colourInventory.length >= id) {
+      if (id && this.pixelInventory.length >= id) {
         this.setSelectedColour(id-1)
       }
     })
   }
 
   #emitUpdateEvent() {
-    const event = new ColourInventoryUpdatedEvent(this.colourInventory, this.selectedColour)
-    this.onColourInventoryUpdatedEvent.fire(event)
+    const event = new PixelInventoryUpdatedEvent(this.pixelInventory, this.selectedColour)
+    this.onPixelInventoryUpdatedEvent.fire(event)
   }
 
   setSelectedColour(colour: number) {
@@ -72,12 +72,12 @@ export default class LocalPlayer implements NonPixelRenderer {
     return this.selectedColour
   }
 
-  getColourInventory() {
-    return this.colourInventory
+  getPixelInventory() {
+    return this.pixelInventory
   }
 
-  setColourInventory(colourInventory: number[]) {
-    this.colourInventory = colourInventory
+  setPixelInventory(pixelInventory: number[]) {
+    this.pixelInventory = pixelInventory
     this.#emitUpdateEvent()
   }
 
@@ -94,12 +94,12 @@ export default class LocalPlayer implements NonPixelRenderer {
     }
   }
 
-  onColourInventoryUpdated(callback: Listener<ColourInventoryUpdatedEvent>) {
-    this.onColourInventoryUpdatedEvent.addListener(callback)
+  onPixelInventoryUpdated(callback: Listener<PixelInventoryUpdatedEvent>) {
+    this.onPixelInventoryUpdatedEvent.addListener(callback)
   }
 
-  offColourInventoryUpdated(callback: Listener<ColourInventoryUpdatedEvent>) {
-    this.onColourInventoryUpdatedEvent.removeListener(callback)
+  offPixelInventoryUpdated(callback: Listener<PixelInventoryUpdatedEvent>) {
+    this.onPixelInventoryUpdatedEvent.removeListener(callback)
   }
 
   render(renderer: Renderer, scale: number) {

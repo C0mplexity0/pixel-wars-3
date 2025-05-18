@@ -5,7 +5,7 @@ import ConnectedPlayer from "./connection/connected-player"
 import type World from "pixel-wars-core/world"
 import PacketOutSetPixel from "pixel-wars-protocol/definitions/packets/out/set-pixel"
 import PacketOutSetPixelTypes from "pixel-wars-protocol/definitions/packets/out/set-pixel-types"
-import PacketOutSetColourInventory from "pixel-wars-protocol/definitions/packets/out/set-colour-inventory"
+import PacketOutSetPixelInventory from "pixel-wars-protocol/definitions/packets/out/set-colour-inventory"
 import PacketOutConnected from "pixel-wars-protocol/definitions/packets/out/connected"
 
 export default class PixelWarsServer {
@@ -73,7 +73,7 @@ export default class PixelWarsServer {
       const socket = player.getSocket()
 
       const packet1 = new PacketOutSetPixelTypes(socket, this.core.getDefaultWorld().getPixelTypes())
-      const packet2 = new PacketOutSetColourInventory(socket, player.getColourInventory())
+      const packet2 = new PacketOutSetPixelInventory(socket, player.getPixelInventory())
       
       packet1.send()
       packet2.send()
