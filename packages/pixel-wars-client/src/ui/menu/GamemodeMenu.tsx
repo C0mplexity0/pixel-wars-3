@@ -1,19 +1,22 @@
 import AnimatedImgButton from "../components/AnimatedImgButton"
-
-import creativeButtonImg from "../assets/img/gamemodes/creative-button.png"
-import creativeButtonSpritesheet from "../assets/img/gamemodes/creative-button-spritesheet.png"
 import { initSingleplayer } from "../../main"
 import CreativeGamemode from "../../game/gamemode/creative"
 import PixelWarsCore from "pixel-wars-core"
+import { nodeEnvDevelopment } from "../../util/node"
+import DebugGamemode from "../../game/gamemode/debug"
+import creativeButtonImg from "../assets/img/gamemodes/creative-button.png"
+import creativeButtonSpritesheet from "../assets/img/gamemodes/creative-button-spritesheet.png"
+import debugButtonImg from "../assets/img/gamemodes/debug-button.png"
+import debugButtonSpritesheet from "../assets/img/gamemodes/debug-button-spritesheet.png"
 
-function GamemodeMenuOption({ defaultImgSrc, spritesheetImgSrc, onClick }: { defaultImgSrc: string, spritesheetImgSrc: string, onClick: () => void }) {
+function GamemodeMenuOption({ defaultImgSrc, spritesheetImgSrc, onClick, timings }: { defaultImgSrc: string, spritesheetImgSrc: string, onClick: () => void, timings: number[] }) {
   return (
     <AnimatedImgButton 
       defaultImgSrc={defaultImgSrc} 
       spritesheetImgSrc={spritesheetImgSrc} 
-      timings={[300, 300, 300, 300, 300, 300]}
       className="w-[504px] h-[72px]"
       onClick={onClick}
+      timings={timings}
     />
   )
 }
@@ -24,10 +27,22 @@ export default function GamemodeMenu() {
       <GamemodeMenuOption 
         defaultImgSrc={creativeButtonImg} 
         spritesheetImgSrc={creativeButtonSpritesheet} 
+        timings={[300, 300, 300, 300, 300, 300]}
         onClick={() => {
           initSingleplayer(new CreativeGamemode(new PixelWarsCore(false)))
         }}
       />
+      {
+        nodeEnvDevelopment() ?
+        <GamemodeMenuOption 
+          defaultImgSrc={debugButtonImg} 
+          spritesheetImgSrc={debugButtonSpritesheet} 
+          onClick={() => {
+            initSingleplayer(new DebugGamemode(new PixelWarsCore(false)))
+          }}
+          timings={[1000]}
+        /> : null
+      }
     </div>
   )
 }

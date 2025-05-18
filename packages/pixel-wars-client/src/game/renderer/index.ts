@@ -40,15 +40,49 @@ export default class Renderer {
     return Math.ceil(Math.max(this.canvas.height / rows, this.canvas.width / columns))
   }
 
+  #renderAnimatedPixelTexture(x: number, y: number, scale: number, id: number) {
+    const pixelTypes = this.client.getClientWorld().getPixelTypes()
+    const pixelType = pixelTypes[id]
+
+    const canvasPos = this.getCanvasPosFromPixelPos(x, y, scale)
+
+    if (!pixelType.animatedTexture)
+      return
+
+    let totalTime = 0
+    const frames = pixelType.animatedTexture.frames
+
+    for (let i=0;i<frames.length;i++)
+      totalTime += frames[i].time
+
+    const time = Date.now() % totalTime
+    let timeLeft = time
+    let frameId = 0
+
+    for (let i=0;i<frames.length;i++) {
+      timeLeft -= frames[i].time
+
+      if (timeLeft <= 0) {
+        frameId = i
+        break
+      }
+    }
+
+    const img = this.client.getClientWorld().loadTexture(pixelType.animatedTexture.frames[frameId].texture)
+
+    this.ctx.drawImage(img, canvasPos[0] - Math.floor(scale/2), canvasPos[1] - Math.floor(scale/2), scale, scale)
+  }
+
   #renderPixel(x: number, y: number, scale: number, id: number) {
     const pixelTypes = this.client.getClientWorld().getPixelTypes()
     const pixelType = pixelTypes[id]
 
     const canvasPos = this.getCanvasPosFromPixelPos(x, y, scale)
 
-    if (pixelType.texture) {
-      const img = this.client.getClientWorld().loadTexture(pixelType.texture)
-      img.src = pixelType.texture
+    if (pixelType.animatedTexture) {
+      this.#renderAnimatedPixelTexture(x, y, scale, id)
+    } else if (pixelType.staticTexture) {
+      const img = this.client.getClientWorld().loadTexture(pixelType.staticTexture)
 
       this.ctx.drawImage(img, canvasPos[0] - Math.floor(scale/2), canvasPos[1] - Math.floor(scale/2), scale, scale)
     } else {
@@ -91,6 +125,7 @@ export default class Renderer {
 
   render(pixels: number[][], extraRenderers: NonPixelRenderer[]) {
     this.#updateCanvasSize()
+    this.ctx.imageSmoothingEnabled = false
 
     this.#renderPixels(pixels)
 

@@ -22,7 +22,7 @@ function GameInventoryExtraMenu({ pixels }: { pixels: number[] }) {
 
         let isTexture = false
 
-        if (pixelType.texture) {
+        if (pixelType.staticTexture) {
           isTexture = true
         }
 
@@ -30,7 +30,7 @@ function GameInventoryExtraMenu({ pixels }: { pixels: number[] }) {
           <Button 
             className="size-8 cursor-pointer border-none"
             key={i} 
-            style={isTexture ? { backgroundImage: `url(${pixelType.texture})`, backgroundSize: "100% 100%" } : { backgroundColor: pixelType.colour }}
+            style={isTexture ? { backgroundImage: `url(${pixelType.staticTexture})`, backgroundSize: "100% 100%" } : { backgroundColor: pixelType.colour }}
             onClick={() => {
               const player = game.getPlayer()
               const newInv = [...player.getPixelInventory()]
@@ -88,16 +88,18 @@ export default function GameInventory() {
           const pixelInfo = game.getClientWorld().getPixelTypes()
           const pixelType = pixelInfo[value]
 
-          let isTexture = false
+          let backgroundImg = null
 
-          if (pixelType.texture) {
-            isTexture = true
-          }
+          if (pixelType.staticTexture)
+            backgroundImg = pixelType.staticTexture
+
+          if (pixelType.animatedTexture)
+            backgroundImg = pixelType.animatedTexture.frames[0].texture
 
           return <Button 
             className={`size-8 cursor-pointer ${selectedPixel === i ? "border-2 scale-110" : "border-none"}`} 
             key={i} 
-            style={isTexture ? { backgroundImage: `url(${pixelType.texture})`, backgroundSize: "100% 100%" } : { backgroundColor: pixelType.colour }}
+            style={backgroundImg ? { backgroundImage: `url(${backgroundImg})`, backgroundSize: "100% 100%" } : { backgroundColor: pixelType.colour }}
             onClick={() => {
               game.getPlayer().setSelectedPixel(i)
             }}

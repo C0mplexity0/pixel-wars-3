@@ -8,11 +8,15 @@ export interface WorldPixel {
   typeId: number,
   playerCanWalk?: boolean,
   buildingDisabled?: boolean,
+  animationTime?: number
 }
 
 export interface PixelType {
   colour: string,
-  texture?: string
+  staticTexture?: string,
+  animatedTexture?: {
+    frames: {texture: string, time: number}[]
+  }
 }
 
 export interface PixelWarsWorldFile {
