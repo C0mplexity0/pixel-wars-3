@@ -13,6 +13,9 @@ export default class BuildingHandler implements NonPixelRenderer {
         return
       }
 
+      if (game.getPlayer().getPixelInventory().length < 1)
+        return
+
       const keyType = event.getKeyType()
 
       let editPos
