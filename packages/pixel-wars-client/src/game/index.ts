@@ -1,7 +1,6 @@
 import LocalPlayer from "./player/local-player"
 import Renderer, { VISIBLE_PIXEL_RADIUS, type NonPixelRenderer } from "./renderer"
 import ClientWorld from "./world/client-world"
-import type PixelWarsCore from "pixel-wars-core"
 import ControlsHandler from "./player/controls"
 import MovementHandler from "./player/movement"
 import BuildingHandler from "./world/building"
@@ -10,9 +9,11 @@ import type ConnectionHandler from "./connection"
 import PacketInJoin from "pixel-wars-protocol/definitions/packets/in/join"
 import { Event, EventHandler, type Listener } from "pixel-wars-core/event"
 import DebugRenderer from "./debug/debug-renderer"
+import type PixelWarsGamemode from "./gamemode"
+import PixelWarsCore, { SettingsUpdatedEvent } from "pixel-wars-core"
 
 interface ClientOptions {
-  pixelWarsCore?: PixelWarsCore,
+  pixelWarsGamemode?: PixelWarsGamemode,
   connectionHandler?: ConnectionHandler
 }
 
@@ -47,7 +48,7 @@ export class DebugModeToggleEvent extends Event {
 export default class PixelWarsClient {
   private running: boolean
 
-  private pixelWarsCore?: PixelWarsCore
+  private pixelWarsGamemode?: PixelWarsGamemode
   private connectionHandler?: ConnectionHandler
 
   private debugModeEnabled: boolean
@@ -66,9 +67,10 @@ export default class PixelWarsClient {
 
   private onUpdateEvent: EventHandler<UpdateEvent>
   private onDebugModeToggleEvent: EventHandler<DebugModeToggleEvent>
+  private onSettingsUpdatedEvent: EventHandler<SettingsUpdatedEvent>
 
   constructor(canvas: HTMLCanvasElement, options?: ClientOptions) {
-    if (options?.pixelWarsCore && options.connectionHandler)
+    if (options?.pixelWarsGamemode && options.connectionHandler)
       throw new Error("Both the PIXEL WARS CORE and a connection handler have been passed to the client. Only one should be passed (the core if in singleplayer, and the connection handler if in multiplayer).")
 
     console.info("STARTING PIXEL WARS CLIENT")
@@ -78,10 +80,13 @@ export default class PixelWarsClient {
     if (!options)
       options = {}
 
-    this.pixelWarsCore = options.pixelWarsCore
+    this.pixelWarsGamemode = options.pixelWarsGamemode
 
-    if (this.pixelWarsCore) {
-      this.pixelWarsCore.addPlayer(new Player(this.pixelWarsCore))
+    if (this.pixelWarsGamemode) {
+      this.pixelWarsGamemode.addPlayer(new Player(this.pixelWarsGamemode.getCore()))
+      this.pixelWarsGamemode.getCore().onSettingsUpdated((settings) => {
+        this.onSettingsUpdatedEvent.fire(settings)
+      })
     }
 
     this.connectionHandler = options.connectionHandler
@@ -113,6 +118,7 @@ export default class PixelWarsClient {
 
     this.onUpdateEvent = new EventHandler()
     this.onDebugModeToggleEvent = new EventHandler()
+    this.onSettingsUpdatedEvent = new EventHandler()
 
     window.addEventListener("keyup", (event) => {
       if (event.key.toLowerCase() === "d" && event.ctrlKey && event.altKey) {
@@ -134,6 +140,23 @@ export default class PixelWarsClient {
       this.connectionHandler.disconnect()
 
     this.renderer.clearCanvas()
+  }
+
+  getSettings() {
+    const core = this.getSingleplayerCore()
+
+    if (core)
+      return core.getSettings()
+
+    return PixelWarsCore.getDefaultSettings()
+  }
+
+  onSettingsUpdated(callback: Listener<SettingsUpdatedEvent>) {
+    this.onSettingsUpdatedEvent.addListener(callback)
+  }
+
+  offSettingsUpdated(callback: Listener<SettingsUpdatedEvent>) {
+    this.onSettingsUpdatedEvent.removeListener(callback)
   }
 
   #sendDebugModeToggleEvent() {
@@ -211,14 +234,14 @@ export default class PixelWarsClient {
   }
 
   isInMultiplayer() {
-    if (this.pixelWarsCore) {
+    if (this.pixelWarsGamemode) {
       return false
     }
     return true
   }
 
   getSingleplayerCore() {
-    return this.pixelWarsCore
+    return this.pixelWarsGamemode?.getCore()
   }
 
   getConnectionHandler() {

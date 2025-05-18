@@ -55,6 +55,8 @@ export class ColourInventoryUpdatedEvent extends Event {
 }
 
 export default class Player {
+  private core: PixelWarsCore
+
   protected position: number[]
   protected colourId: number
   private colourInventory: number[]
@@ -67,6 +69,8 @@ export default class Player {
   private onPositionChangeEvent: EventHandler<PositionChangeEvent>
 
   constructor(core: PixelWarsCore) {
+    this.core = core
+
     this.position = [0, 0]
     this.colourId = Math.floor(Math.random() * PLAYER_COLOURS.length)
 
@@ -94,6 +98,11 @@ export default class Player {
   }
 
   setWorld(world: World) {
+    if (!world) {
+      this.core.removePlayer(this)
+      return
+    }
+
     this.world = world
    
     this.setPosition(0, 0)

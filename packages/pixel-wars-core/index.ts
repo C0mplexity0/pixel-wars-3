@@ -1,11 +1,34 @@
 import World from "./world"
 import Player from "./player"
+import { Event, EventHandler, type Listener } from "./event"
+
+export interface PixelWarsCoreSettings {
+  downloadingEnabled: boolean,
+  importingEnabled: boolean
+}
+
+export class SettingsUpdatedEvent extends Event {
+  private newSettings: PixelWarsCoreSettings
+
+  constructor(newSettings: PixelWarsCoreSettings) {
+    super()
+    this.newSettings = newSettings
+  }
+
+  getNewSettings() {
+    return this.newSettings
+  }
+}
 
 export default class PixelWarsCore {
   private inMultiplayer: boolean
 
+  private settings: PixelWarsCoreSettings
+
   private worlds: World[]
   private players: Player[]
+
+  private onSettingsUpdatedEvent: EventHandler<SettingsUpdatedEvent>
 
   constructor(inMultiplayer?: boolean) {
     console.info("STARTING PIXEL WARS CORE")
@@ -21,14 +44,36 @@ export default class PixelWarsCore {
       this.inMultiplayer = false
     }
 
+    this.settings = PixelWarsCore.getDefaultSettings()
+
     this.worlds = []
     this.players = []
 
-    this.createDefaultWorld()
+    this.onSettingsUpdatedEvent = new EventHandler()
   }
 
-  createDefaultWorld() {
-    this.worlds.push(new World())
+  static getDefaultSettings(): PixelWarsCoreSettings {
+    return {
+      downloadingEnabled: false,
+      importingEnabled: false
+    }
+  }
+
+  setSetting<T extends keyof PixelWarsCoreSettings>(setting: T, value: PixelWarsCoreSettings[T]) {
+    this.settings[setting] = value
+    this.onSettingsUpdatedEvent.fire(new SettingsUpdatedEvent(this.settings))
+  }
+
+  onSettingsUpdated(callback: Listener<SettingsUpdatedEvent>) {
+    this.onSettingsUpdatedEvent.addListener(callback)
+  }
+
+  offSettingsUpdated(callback: Listener<SettingsUpdatedEvent>) {
+    this.onSettingsUpdatedEvent.removeListener(callback)
+  }
+
+  getSettings() {
+    return this.settings
   }
 
   getDefaultWorld() {
@@ -45,9 +90,6 @@ export default class PixelWarsCore {
     if (i >= 0)
       this.worlds.splice(i, 1)
 
-    if (!this.getDefaultWorld())
-      this.createDefaultWorld()
-
     const defaultWorld = this.getDefaultWorld()
 
     for (let i=0;i<this.players.length;i++) {
@@ -56,8 +98,18 @@ export default class PixelWarsCore {
     }
   }
 
-  addPlayer(player: Player) {
+  addPlayer(player: Player, world: World=this.getDefaultWorld()) {
+    if (!world)
+      throw new Error("Can't add new player to core, there is no world to add them to!")
+
+    player.setWorld(world)
     this.players.push(player)
+  }
+
+  removePlayer(player: Player) {
+    const i = this.players.indexOf(player)
+    if (i >= 0)
+      this.players.splice(i, 1)
   }
 
   getPlayers() {

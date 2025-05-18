@@ -3,6 +3,8 @@ import AnimatedImgButton from "../AnimatedImgButton"
 import creativeButtonImg from "../../assets/img/gamemodes/creative-button.png"
 import creativeButtonSpritesheet from "../../assets/img/gamemodes/creative-button-spritesheet.png"
 import { initSingleplayer } from "../../../main"
+import CreativeGamemode from "../../../game/gamemode/creative"
+import PixelWarsCore from "pixel-wars-core"
 
 function GamemodeMenuOption({ defaultImgSrc, spritesheetImgSrc, onClick }: { defaultImgSrc: string, spritesheetImgSrc: string, onClick: () => void }) {
   return (
@@ -23,7 +25,7 @@ export default function GamemodeMenu() {
         defaultImgSrc={creativeButtonImg} 
         spritesheetImgSrc={creativeButtonSpritesheet} 
         onClick={() => {
-          initSingleplayer()
+          initSingleplayer(new CreativeGamemode(new PixelWarsCore(false)))
         }}
       />
     </div>

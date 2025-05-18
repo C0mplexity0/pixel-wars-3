@@ -11,6 +11,8 @@ import homeIcon from "./assets/img/icon/home.png"
 import Icon from "./components/ui/Icon";
 import fileDownload from "js-file-download";
 import WorldUtils from "pixel-wars-core/world/utils";
+import { launchFilePrompt } from "../util/file-prompt";
+import type { SettingsUpdatedEvent } from "pixel-wars-core";
 
 function Inventory() {
   const game = getClient()
@@ -73,6 +75,68 @@ function BuildKeyTip() {
   )
 }
 
+function DropdownMenuDownloadImportButtons() {
+  const game = getClient()
+  const [gameSettings, setGameSettings] = useState(game?.getSettings())
+
+  useEffect(() => {
+    if (!game)
+      return
+
+    const callback = (event: SettingsUpdatedEvent) => {
+      setGameSettings(event.getNewSettings())
+    }
+
+    game.onSettingsUpdated(callback)
+
+    return () => {
+      game.offSettingsUpdated(callback)
+    }
+  })
+
+  if (!game) {
+    return (
+      <>
+      </>
+    )
+  }
+
+  return (
+    <>
+      {
+        gameSettings?.downloadingEnabled ?
+        <DropdownMenuButton
+        onClick={() => {
+          fileDownload(JSON.stringify(game.getClientWorld().getFileContent()), "world.json")
+        }}
+        >
+          <Icon src={downloadIcon} /> <span className="h-5">Save World</span>
+        </DropdownMenuButton> : null
+      }
+      {
+        gameSettings?.importingEnabled ?
+        <DropdownMenuButton
+          onClick={() => {
+            const core = game.getSingleplayerCore()
+            if (!core)
+              return
+
+            launchFilePrompt((content) => {
+              const core = game.getSingleplayerCore()
+              if (!core)
+                return
+
+              WorldUtils.importFile(core, content)
+            })
+          }}
+        >
+          <Icon src={uploadIcon} /> <span className="h-5">Import World</span>
+        </DropdownMenuButton> : null
+      }
+    </>
+  )
+}
+
 export default function GameUi() {
   const game = getClient()
   const [debugModeEnabled, setDebugModeEnabled] = useState(game ? game.inDebugMode() : false)
@@ -124,51 +188,7 @@ export default function GameUi() {
           >
             <Icon src={homeIcon} /> <span className="h-5">Home</span>
           </DropdownMenuButton>
-          <DropdownMenuButton
-            onClick={() => {
-              fileDownload(JSON.stringify(game.getClientWorld().getFileContent()), "world.json")
-            }}
-          >
-            <Icon src={downloadIcon} /> <span className="h-5">Save World</span>
-          </DropdownMenuButton>
-          <DropdownMenuButton
-            onClick={() => {
-              const core = game.getSingleplayerCore()
-              if (!core)
-                return
-
-              const filePrompt = document.createElement("input")
-              filePrompt.type = "file"
-              
-              const existingPrompt = document.getElementById("filePrompt")
-              if (existingPrompt)
-                existingPrompt.remove()
-
-              filePrompt.id = "filePrompt"
-              filePrompt.style.display = "none"
-              filePrompt.accept = "application/JSON"
-              document.body.appendChild(filePrompt)
-              filePrompt.click()
-
-              filePrompt.addEventListener("change", async () => {
-                if (!filePrompt.files)
-                  return
-
-                const core = game.getSingleplayerCore()
-                if (!core)
-                  return
-
-                filePrompt.remove()
-
-                const file = filePrompt.files[0]
-                const text = await file.text()
-
-                WorldUtils.importFile(core, text)
-              })
-            }}
-          >
-            <Icon src={uploadIcon} /> <span className="h-5">Import World</span>
-          </DropdownMenuButton>
+          <DropdownMenuDownloadImportButtons />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

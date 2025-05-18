@@ -1,7 +1,7 @@
-import PixelWarsCore from "pixel-wars-core"
 import PixelWarsClient from "./game"
 import ConnectionHandler from "./game/connection"
 import { Event, EventHandler, type Listener } from "pixel-wars-core/event"
+import type PixelWarsGamemode from "./game/gamemode"
 
 export class MultiplayerConnectionChangeEvent extends Event {
   private message: string
@@ -21,7 +21,7 @@ const endEvent = new EventHandler<Event>()
 const multiplayerConnectionMessageEvent = new EventHandler<MultiplayerConnectionChangeEvent>()
 const multiplayerConnectionFailureEvent = new EventHandler<MultiplayerConnectionChangeEvent>()
 
-let core: PixelWarsCore | undefined
+let gamemode: PixelWarsGamemode | undefined
 let client: PixelWarsClient | undefined
 
 export function getClient() {
@@ -37,15 +37,15 @@ function getGameCanvas() {
   return gameCanvas
 }
 
-export function initSingleplayer() {
+export function initSingleplayer(gamemodeToInit: PixelWarsGamemode) {
   if (initialised())
     return
 
   const gameCanvas = getGameCanvas()
 
-  core = new PixelWarsCore(false)
+  gamemode = gamemodeToInit
 
-  client = new PixelWarsClient(gameCanvas, { pixelWarsCore: core })
+  client = new PixelWarsClient(gameCanvas, { pixelWarsGamemode: gamemode })
 
   initEvent.fire(new Event())
 }
@@ -108,7 +108,7 @@ export function offPixelWarsEnd(callback: () => void) {
 }
 
 export function initialised() {
-  if (core || client)
+  if (gamemode || client)
     return true
 
   return false
@@ -119,7 +119,7 @@ export function endGame() {
     client.end()
 
   client = undefined
-  core = undefined
+  gamemode = undefined
 
   endEvent.fire(new Event())
 }
