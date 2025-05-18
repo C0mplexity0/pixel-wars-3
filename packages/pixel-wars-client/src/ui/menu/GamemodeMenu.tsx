@@ -8,6 +8,7 @@ import creativeButtonImg from "../assets/img/gamemodes/creative-button.png"
 import creativeButtonSpritesheet from "../assets/img/gamemodes/creative-button-spritesheet.png"
 import debugButtonImg from "../assets/img/gamemodes/debug-button.png"
 import debugButtonSpritesheet from "../assets/img/gamemodes/debug-button-spritesheet.png"
+import DucksGamemode from "../../game/gamemode/ducks"
 
 function GamemodeMenuOption({ defaultImgSrc, spritesheetImgSrc, onClick, timings }: { defaultImgSrc: string, spritesheetImgSrc: string, onClick: () => void, timings: number[] }) {
   return (
@@ -30,6 +31,14 @@ export default function GamemodeMenu() {
         timings={[300, 300, 300, 300, 300, 300]}
         onClick={() => {
           initSingleplayer(new CreativeGamemode(new PixelWarsCore(false)))
+        }}
+      />
+      <GamemodeMenuOption 
+        defaultImgSrc={creativeButtonImg} 
+        spritesheetImgSrc={creativeButtonSpritesheet} 
+        timings={[300, 300, 300, 300, 300, 300]}
+        onClick={() => {
+          initSingleplayer(new DucksGamemode(new PixelWarsCore(false)))
         }}
       />
       {
