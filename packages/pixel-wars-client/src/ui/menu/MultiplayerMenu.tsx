@@ -1,9 +1,9 @@
-import Input from "../ui/Input"
-import Button from "../ui/Button"
-import AnimatedImg from "../AnimatedImg"
-import loadingSpritesheet from "../../assets/img/loading.png"
+import Input from "../components/ui/Input"
+import Button from "../components/ui/Button"
+import AnimatedImg from "../components/AnimatedImg"
+import loadingSpritesheet from "../assets/img/loading.png"
 import { useState, useRef, useEffect } from "react"
-import { onMultiplayerConnectionMessage, offMultiplayerConnectionMessage, initMultiplayer, onMultiplayerConnectionFailure, offMultiplayerConnectionFailure, MultiplayerConnectionChangeEvent } from "../../../main"
+import { onMultiplayerConnectionMessage, offMultiplayerConnectionMessage, initMultiplayer, onMultiplayerConnectionFailure, offMultiplayerConnectionFailure, MultiplayerConnectionChangeEvent } from "../../main"
 
 export default function MultiplayerMenu() {
   const [loading, setLoading] = useState(false)

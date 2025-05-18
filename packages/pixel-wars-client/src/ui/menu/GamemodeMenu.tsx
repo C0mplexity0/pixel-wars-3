@@ -1,9 +1,9 @@
-import AnimatedImgButton from "../AnimatedImgButton"
+import AnimatedImgButton from "../components/AnimatedImgButton"
 
-import creativeButtonImg from "../../assets/img/gamemodes/creative-button.png"
-import creativeButtonSpritesheet from "../../assets/img/gamemodes/creative-button-spritesheet.png"
-import { initSingleplayer } from "../../../main"
-import CreativeGamemode from "../../../game/gamemode/creative"
+import creativeButtonImg from "../assets/img/gamemodes/creative-button.png"
+import creativeButtonSpritesheet from "../assets/img/gamemodes/creative-button-spritesheet.png"
+import { initSingleplayer } from "../../main"
+import CreativeGamemode from "../../game/gamemode/creative"
 import PixelWarsCore from "pixel-wars-core"
 
 function GamemodeMenuOption({ defaultImgSrc, spritesheetImgSrc, onClick }: { defaultImgSrc: string, spritesheetImgSrc: string, onClick: () => void }) {

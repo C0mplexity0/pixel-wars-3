@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import "./App.css"
-import GameUi from "./GameUi"
+import GameUi from "./game/GameUi"
 import logoBlack from "./assets/img/pixel-wars-black.png"
 import PixelatedImg from "./components/PixelatedImg"
 import AnimatedImgButton from "./components/AnimatedImgButton"
@@ -9,8 +9,8 @@ import singleplayerButtonSpritesheet from "./assets/img/singleplayer-button-spri
 import multiplayerButtonDefault from "./assets/img/multiplayer-button-default.png"
 import multiplayerButtonSpritesheet from "./assets/img/multiplayer-button-spritesheet.png"
 import { initialised, offPixelWarsEnd, offPixelWarsInit, onPixelWarsEnd, onPixelWarsInit } from "../main"
-import MultiplayerMenu from "./components/menu/MultiplayerMenu"
-import GamemodeMenu from "./components/menu/GamemodeMenu"
+import MultiplayerMenu from "./menu/MultiplayerMenu"
+import GamemodeMenu from "./menu/GamemodeMenu"
 
 function Menu() {
   const [singleplayerMenuOpen, setSingleplayerMenuOpen] = useState(false)
