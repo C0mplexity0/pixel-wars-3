@@ -1,7 +1,5 @@
 import type PixelWarsClient from "..";
 
-export const VISIBLE_PIXEL_RADIUS = 25
-
 export default class Renderer {
   private client: PixelWarsClient
   private canvas: HTMLCanvasElement;

@@ -33,6 +33,19 @@ export class PlayerAddedEvent extends Event {
   }
 }
 
+export class WorldAddedEvent extends Event {
+  private world: World
+
+  constructor(world: World) {
+    super()
+    this.world = world
+  }
+
+  getWorld() {
+    return this.world
+  }
+}
+
 export default class PixelWarsCore {
   private inMultiplayer: boolean
 
@@ -43,6 +56,7 @@ export default class PixelWarsCore {
 
   private onSettingsUpdatedEvent: EventHandler<SettingsUpdatedEvent>
   private onPlayerAddedEvent: EventHandler<PlayerAddedEvent>
+  private onWorldAddedEvent: EventHandler<WorldAddedEvent>
 
   constructor(inMultiplayer?: boolean) {
     console.info("STARTING PIXEL WARS CORE")
@@ -65,6 +79,7 @@ export default class PixelWarsCore {
 
     this.onSettingsUpdatedEvent = new EventHandler()
     this.onPlayerAddedEvent = new EventHandler()
+    this.onWorldAddedEvent = new EventHandler()
   }
 
   static getDefaultSettings(): PixelWarsCoreSettings {
@@ -97,6 +112,7 @@ export default class PixelWarsCore {
 
   addWorld(world: World) {
     this.worlds.push(world)
+    this.onWorldAddedEvent.fire(new WorldAddedEvent(world))
   }
 
   removeWorld(world: World) {
@@ -111,6 +127,18 @@ export default class PixelWarsCore {
       if (this.players[i].getWorld() === world)
         this.players[i].setWorld(defaultWorld)
     }
+  }
+
+  getWorlds() {
+    return this.worlds
+  }
+
+  onWorldAdded(callback: Listener<WorldAddedEvent>) {
+    this.onWorldAddedEvent.addListener(callback)
+  }
+
+  offWorldAdded(callback: Listener<WorldAddedEvent>) {
+    this.onWorldAddedEvent.removeListener(callback)
   }
 
   addPlayer(player: Player, world: World=this.getDefaultWorld()) {
@@ -138,10 +166,6 @@ export default class PixelWarsCore {
 
   getPlayers() {
     return this.players
-  }
-
-  getWorlds() {
-    return this.worlds
   }
 
   isInMultiplayer() {

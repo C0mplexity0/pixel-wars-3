@@ -32,7 +32,7 @@ export interface PixelWarsWorldFile {
   }
 }
 
-class PixelChangeEvent extends Event {
+export class PixelChangeEvent extends Event {
 
   private pos: number[]
   private pixel: WorldPixel
@@ -52,11 +52,28 @@ class PixelChangeEvent extends Event {
   }
 }
 
+export class VisiblePixelRadiusChangeEvent extends Event {
+  private visiblePixelRadius: number
+
+  constructor(visiblePixelRadius: number) {
+    super()
+    this.visiblePixelRadius = visiblePixelRadius
+  }
+
+  getVisiblePixelRadius() {
+    return this.visiblePixelRadius
+  }
+}
+
 export default class World {
   private world: {[coordinates: string]: WorldPixel[][]};
+  private generator: (x: number, y: number) => WorldPixel[][]
   private pixelTypes: PixelType[]
 
+  private visiblePixelRadius: number
+
   private onPixelChangeEvent: EventHandler<PixelChangeEvent>
+  private onVisiblePixelRadiusChangeEvent: EventHandler<VisiblePixelRadiusChangeEvent>
   
   constructor() {
     this.world = {}
@@ -66,20 +83,33 @@ export default class World {
       }
     ]
 
+    this.visiblePixelRadius = 25
+
     this.onPixelChangeEvent = new EventHandler()
+    this.onVisiblePixelRadiusChangeEvent = new EventHandler()
+
+    this.generator = (x: number, y: number) => {
+      const chunk: WorldPixel[][] = WorldUtils.createBlankChunk()
+
+      if (x === 0 && y === 0) {
+        chunk[0][0] = {
+          typeId: 0,
+          playerCanWalk: true
+        }
+      }
+
+      return chunk
+    }
+  }
+
+  setGenerator(callback: (x: number, y: number) => WorldPixel[][]) {
+    this.generator = callback
   }
 
   #generateNewChunk(x: number, y: number) {
     const chunkId = WorldUtils.getChunkId(x, y)
 
-    const chunk: WorldPixel[][] = WorldUtils.createBlankChunk()
-
-    if (x === 0 && y === 0) {
-      chunk[0][0] = {
-        typeId: 0,
-        playerCanWalk: true
-      }
-    }
+    const chunk = this.generator(x, y)
 
     this.world[chunkId] = chunk
 
@@ -138,6 +168,23 @@ export default class World {
 
   offPixelChange(callback: Listener<PixelChangeEvent>) {
     this.onPixelChangeEvent.removeListener(callback)
+  }
+
+  getVisiblePixelRadius() {
+    return this.visiblePixelRadius
+  }
+
+  setVisiblePixelRadius(visiblePixelRadius: number) {
+    this.visiblePixelRadius = visiblePixelRadius
+    this.onVisiblePixelRadiusChangeEvent.fire(new VisiblePixelRadiusChangeEvent(visiblePixelRadius))
+  }
+
+  onVisiblePixelRadiusChange(callback: Listener<VisiblePixelRadiusChangeEvent>) {
+    this.onVisiblePixelRadiusChangeEvent.addListener(callback)
+  }
+
+  offVisiblePixelRadiusChange(callback: Listener<VisiblePixelRadiusChangeEvent>) {
+    this.onVisiblePixelRadiusChangeEvent.removeListener(callback)
   }
 
   getFileContent() {

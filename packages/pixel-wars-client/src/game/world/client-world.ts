@@ -8,6 +8,7 @@ export default class ClientWorld {
   private client: PixelWarsClient
   private textureCache: {[url: string]: HTMLImageElement}
   private pixelTypes: PixelType[]
+  private visiblePixelRadius: number
 
   constructor(client: PixelWarsClient) {
     this.world = {}
@@ -18,6 +19,13 @@ export default class ClientWorld {
         colour: "#ffffff"
       }
     ]
+    this.visiblePixelRadius = 25
+
+    if (client.getSingleplayerCore()) {
+      const radius = client.getSingleplayerCore()?.getPlayers()[0].getWorld().getVisiblePixelRadius()
+      if (radius)
+        this.visiblePixelRadius = radius
+    }
   }
 
   #loadChunk(x: number, y: number) {
@@ -110,6 +118,14 @@ export default class ClientWorld {
     img.src = texture
     this.textureCache[texture] = img
     return img
+  }
+
+  getVisiblePixelRadius() {
+    return this.visiblePixelRadius
+  }
+
+  setVisiblePixelRadius(visiblePixelRadius: number) {
+    this.visiblePixelRadius = visiblePixelRadius
   }
 
   getFileContent() {

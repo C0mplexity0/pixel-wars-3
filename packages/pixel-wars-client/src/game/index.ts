@@ -1,5 +1,5 @@
 import LocalPlayer from "./player/local-player"
-import Renderer, { VISIBLE_PIXEL_RADIUS, type NonPixelRenderer } from "./renderer"
+import Renderer, { type NonPixelRenderer } from "./renderer"
 import ClientWorld from "./world/client-world"
 import ControlsHandler from "./player/controls"
 import MovementHandler from "./player/movement"
@@ -84,7 +84,9 @@ export default class PixelWarsClient {
 
     if (this.pixelWarsGamemode) {
       this.pixelWarsGamemode.addPlayer(new Player(this.pixelWarsGamemode.getCore()))
-      this.pixelWarsGamemode.getCore().onSettingsUpdated((settings) => {
+      const core = this.pixelWarsGamemode.getCore()
+
+      core.onSettingsUpdated((settings) => {
         this.onSettingsUpdatedEvent.fire(settings)
       })
     }
@@ -165,13 +167,15 @@ export default class PixelWarsClient {
   }
 
   #getRegionForRendering() {
+    const visiblePixelRadius = this.getClientWorld().getVisiblePixelRadius()
+
     const centre = this.player.getPosition()
 
     const region = []
 
-    for (let y=-VISIBLE_PIXEL_RADIUS;y<VISIBLE_PIXEL_RADIUS;y++) {
+    for (let y=-visiblePixelRadius;y<visiblePixelRadius;y++) {
       const row = []
-      for (let x=-VISIBLE_PIXEL_RADIUS;x<VISIBLE_PIXEL_RADIUS;x++) {
+      for (let x=-visiblePixelRadius;x<visiblePixelRadius;x++) {
         row.push(this.world.getPixel(centre[0] + x, centre[1] + y).typeId)
       }
       region.push(row)

@@ -55,8 +55,9 @@ export default class LocalPlayer implements NonPixelRenderer {
       this.position = player.getPosition()
       this.pixelInventory = player.getPixelInventory()
 
-      player.onWorldChange(() => {
+      player.onWorldChange((event) => {
         this.client.getClientWorld().reset()
+        this.client.getClientWorld().setVisiblePixelRadius(event.getWorld().getVisiblePixelRadius())
       })
 
       player.onPositionChange((event) => {
