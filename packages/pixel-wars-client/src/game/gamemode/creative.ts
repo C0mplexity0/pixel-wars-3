@@ -1,6 +1,7 @@
 import type PixelWarsCore from "pixel-wars-core";
 import PixelWarsGamemode from ".";
 import World from "pixel-wars-core/world";
+import type { WorldChangeEvent } from "pixel-wars-core/player";
 
 export default class CreativeGamemode extends PixelWarsGamemode {
 
@@ -79,7 +80,20 @@ export default class CreativeGamemode extends PixelWarsGamemode {
     core.setSetting("importingEnabled", true)
 
     core.onPlayerAdded((event) => {
-      event.getPlayer().setPixelInventory([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+      const player = event.getPlayer()
+      player.setPixelInventory([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+
+      player.onWorldChange((event: WorldChangeEvent) => {
+        const world = event.getWorld()
+        const pixelInventory = []
+        const pixelTypes = world.getPixelTypes()
+
+        for (let i=1;i<pixelTypes.length;i++) {
+          pixelInventory.push(i)
+        }
+
+        player.setPixelInventory(pixelInventory)
+      })
     })
   }
 }

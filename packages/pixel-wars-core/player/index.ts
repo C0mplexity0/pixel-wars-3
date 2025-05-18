@@ -37,20 +37,14 @@ export class PositionChangeEvent extends Event {
 export class PixelInventoryUpdatedEvent extends Event {
 
   private pixelInventory: number[]
-  private selectedColour: number
 
-  constructor(pixelInventory: number[], selectedColour: number) {
+  constructor(pixelInventory: number[]) {
     super()
     this.pixelInventory = pixelInventory
-    this.selectedColour = selectedColour
   }
 
   getPixelInventory() {
     return this.pixelInventory
-  }
-
-  getSelectedColour() {
-    return this.selectedColour
   }
 }
 
@@ -60,7 +54,6 @@ export default class Player {
   protected position: number[]
   protected colourId: number
   private pixelInventory: number[]
-  private selectedColour: number
 
   private world: World
 
@@ -79,7 +72,6 @@ export default class Player {
     this.onWorldChangeEvent = new EventHandler()
 
     this.pixelInventory = []
-    this.selectedColour = 0
 
     this.onPixelInventoryUpdatedEvent = new EventHandler()
     this.onPositionChangeEvent = new EventHandler()
@@ -136,11 +128,8 @@ export default class Player {
   }
 
   setPixelInventory(pixelInventory: number[]) {
-    if (this.selectedColour >= pixelInventory.length)
-      this.selectedColour = pixelInventory.length-1
-
     this.pixelInventory = pixelInventory
-    this.onPixelInventoryUpdatedEvent.fire(new PixelInventoryUpdatedEvent(pixelInventory, this.selectedColour))
+    this.onPixelInventoryUpdatedEvent.fire(new PixelInventoryUpdatedEvent(pixelInventory))
   }
 
   onPixelInventoryUpdated(callback: Listener<PixelInventoryUpdatedEvent>) {
@@ -149,16 +138,6 @@ export default class Player {
 
   offPixelInventoryUpdated(callback: Listener<PixelInventoryUpdatedEvent>) {
     this.onPixelInventoryUpdatedEvent.removeListener(callback)
-  }
-
-  getSelectedColour() {
-    return this.selectedColour
-  }
-
-  setSelectedColour(newColour: number) {
-    this.selectedColour = newColour
-    const event = new PixelInventoryUpdatedEvent(this.pixelInventory, this.selectedColour)
-    this.onPixelInventoryUpdatedEvent.fire(event)
   }
 
   getColourId() {

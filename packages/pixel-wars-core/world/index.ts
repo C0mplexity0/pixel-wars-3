@@ -225,10 +225,6 @@ export default class World {
       for (let y=0;y<info.chunkSize;y++) {
         const row: WorldPixel[] = []
         for (let x=0;x<info.chunkSize;x++) {
-          if (compressedChunk[(16 * y) + x] === undefined) {
-            console.log(compressedChunk)
-            console.log((16 * y) + x)
-          }
           row.push(pixels[compressedChunk[(16 * y) + x]])
         }
         chunk.push(row)

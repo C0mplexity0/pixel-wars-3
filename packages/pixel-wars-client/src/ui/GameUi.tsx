@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Debug from "./debug/Debug";
 import { endGame, getClient } from "../main";
 import { ShiftKeyIndicator } from "./components/ui/KeyIndicator";
-import type { PixelInventoryUpdatedEvent } from "pixel-wars-core/player";
 import type { DebugModeToggleEvent } from "../game";
 import DropdownMenu, { DropdownMenuButton, DropdownMenuContent } from "./components/ui/DropdownMenu";
 import downloadIcon from "./assets/img/icon/download.png"
@@ -13,20 +12,21 @@ import fileDownload from "js-file-download";
 import WorldUtils from "pixel-wars-core/world/utils";
 import { launchFilePrompt } from "../util/file-prompt";
 import type { SettingsUpdatedEvent } from "pixel-wars-core";
+import type { LocalPixelInventoryUpdatedEvent } from "../game/player/local-player";
 
 function Inventory() {
   const game = getClient()
-  const [selectedColour, setSelectedColour] = useState(game ? game.getPlayer().getSelectedColour() : 0)
+  const [selectedPixel, setSelectedPixel] = useState(game ? game.getPlayer().getSelectedPixel() : 0)
   const [colours, setColours] = useState(game ? game.getPlayer().getPixelInventory() : [])
 
   useEffect(() => {
     if (!game)
       return
 
-    const callback = (event: PixelInventoryUpdatedEvent) => {
+    const callback = (event: LocalPixelInventoryUpdatedEvent) => {
       const pixelInventory = event.getPixelInventory()
-      const selectedColour = event.getSelectedColour()
-      setSelectedColour(selectedColour)
+      const selectedPixel = event.getSelectedPixel()
+      setSelectedPixel(selectedPixel)
       setColours(pixelInventory)
     }
 
@@ -53,11 +53,11 @@ function Inventory() {
         }
 
         return <button 
-          className={`size-8 cursor-pointer ${selectedColour === i ? "scale-110" : ""}`} 
+          className={`size-8 cursor-pointer ${selectedPixel === i ? "scale-110" : ""}`} 
           key={i} 
           style={isTexture ? { backgroundImage: `url(${pixelType.texture})`, backgroundSize: "100% 100%", imageRendering: "pixelated" } : { backgroundColor: pixelType.colour }}
           onClick={() => {
-            game.getPlayer().setSelectedColour(i)
+            game.getPlayer().setSelectedPixel(i)
           }}
         ></button>
       })}
