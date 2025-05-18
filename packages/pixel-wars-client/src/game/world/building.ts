@@ -58,6 +58,8 @@ export default class BuildingHandler implements NonPixelRenderer {
   #renderPixelBuildableIndicator(renderer: Renderer, x: number, y: number, xOffset: number, yOffset: number, scale: number) {
     const ctx = renderer.getContext()
     const pixel = this.game.getClientWorld().getPixel(x, y)
+    const pixelTypes = this.game.getClientWorld().getPixelTypes()
+    const player = this.game.getPlayer()
 
     if (pixel.buildingDisabled) {
       return
@@ -65,7 +67,7 @@ export default class BuildingHandler implements NonPixelRenderer {
 
     const centre = this.game.getRenderer().getCanvasCentre()
 
-    ctx.strokeStyle = "#333333"
+    ctx.strokeStyle = pixelTypes[player.getPixelInventory()[player.getSelectedPixel()]].colour
     ctx.lineWidth = Math.ceil(.1 * scale)
     ctx.beginPath()
     ctx.rect(centre[0] + (xOffset * scale) - scale/2, centre[1] + (yOffset * scale) - scale/2, scale, scale)
