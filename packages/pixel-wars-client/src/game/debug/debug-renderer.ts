@@ -17,7 +17,7 @@ export default class DebugRenderer implements NonPixelRenderer {
     const chunkCoordinates = WorldUtils.getChunkFromPixelPos(playerPos[0], playerPos[1])
     const chunkPixelPos = [chunkCoordinates[0] * CHUNK_SIZE, chunkCoordinates[1] * CHUNK_SIZE]
 
-    const rectPos = renderer.getCanvasPosFromPixelPos(chunkPixelPos[0] - playerPos[0], chunkPixelPos[1] - playerPos[1], scale)
+    const rectPos = renderer.getCanvasPosFromPixelPos(chunkPixelPos[0], chunkPixelPos[1], scale)
 
     const ctx = renderer.getContext()
     ctx.strokeStyle = "#db7b27"

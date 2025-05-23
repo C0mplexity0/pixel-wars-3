@@ -3,8 +3,8 @@ import type PixelWarsCore from ".."
 
 export default class WorldUtils {
   static getChunkFromPixelPos(x: number, y: number) {
-    const chunkX = Math.floor(x / CHUNK_SIZE)
-    const chunkY = Math.floor(y / CHUNK_SIZE)
+    const chunkX = Math.floor(Math.floor(x) / CHUNK_SIZE)
+    const chunkY = Math.floor(Math.floor(y) / CHUNK_SIZE)
 
     return [chunkX, chunkY]
   }

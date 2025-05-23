@@ -169,10 +169,12 @@ export default class PixelWarsClient {
 
     const region = []
 
-    for (let y=-VISIBLE_PIXEL_RADIUS;y<VISIBLE_PIXEL_RADIUS;y++) {
+    for (let y=-VISIBLE_PIXEL_RADIUS;y<VISIBLE_PIXEL_RADIUS+1;y++) {
       const row = []
-      for (let x=-VISIBLE_PIXEL_RADIUS;x<VISIBLE_PIXEL_RADIUS;x++) {
-        row.push(this.world.getPixel(Math.floor(centre[0] + x), Math.floor(centre[1] + y)).typeId)
+      for (let x=-VISIBLE_PIXEL_RADIUS;x<VISIBLE_PIXEL_RADIUS+1;x++) {
+        const pixelX = Math.floor(centre[0] + x)
+        const pixelY = Math.floor(centre[1] + y)
+        row.push({pixel: this.world.getPixel(pixelX, pixelY), position: [pixelX, pixelY]})
       }
       region.push(row)
     }

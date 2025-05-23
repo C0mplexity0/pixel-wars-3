@@ -1,6 +1,12 @@
+import type { WorldPixel } from "pixel-wars-core/world";
 import type PixelWarsClient from "..";
 
 export const VISIBLE_PIXEL_RADIUS = 25
+
+export interface RendererPixelInfo {
+  pixel: WorldPixel,
+  position: number[]
+}
 
 export default class Renderer {
   private client: PixelWarsClient
@@ -33,9 +39,9 @@ export default class Renderer {
     this.canvas.height = this.canvas.clientHeight
   }
 
-  #getScale(pixels: number[][]) {
-    const rows = pixels.length - 1
-    const columns = pixels[0].length - 1
+  #getScale(pixels: RendererPixelInfo[][]) {
+    const rows = pixels.length - 2
+    const columns = pixels[0].length - 2
 
     return Math.ceil(Math.max(this.canvas.height / rows, this.canvas.width / columns))
   }
@@ -97,23 +103,22 @@ export default class Renderer {
     }
   }
 
-  #renderPixels(pixels: number[][]) {
-    const rows = pixels.length
-    const columns = pixels[0].length
-
+  #renderPixels(pixels: RendererPixelInfo[][]) {
     const scale = this.#getScale(pixels)
     for (let y=0;y<pixels.length;y++) {
       for (let x=0;x<pixels[y].length;x++) {
-        this.#renderPixel(x - (columns / 2), y - (rows / 2), scale, pixels[y][x])
+        this.#renderPixel(pixels[y][x].position[0], pixels[y][x].position[1], scale, pixels[y][x].pixel.typeId)
       }
     }
   }
 
   getCanvasPosFromPixelPos(x: number, y: number, scale: number) {
-    const canvasX = (x * scale) + Math.floor(this.canvas.width / 2)
-    const canvasY = (y * scale) + Math.floor(this.canvas.height / 2)
+    const [playerX, playerY] = this.client.getPlayer().getPosition()
 
-    return [canvasX, canvasY]
+    const canvasX = ((x - playerX) * scale) + this.canvas.width / 2
+    const canvasY = ((y - playerY) * scale) + this.canvas.height / 2
+
+    return [Math.floor(canvasX), Math.floor(canvasY)]
   }
 
   getCanvasCentre() {
@@ -123,7 +128,7 @@ export default class Renderer {
     return [x, y]
   }
 
-  render(pixels: number[][], extraRenderers: NonPixelRenderer[]) {
+  render(pixels: RendererPixelInfo[][], extraRenderers: NonPixelRenderer[]) {
     this.#updateCanvasSize()
     this.ctx.imageSmoothingEnabled = false
 

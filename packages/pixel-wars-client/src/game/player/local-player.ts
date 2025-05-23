@@ -123,13 +123,13 @@ export default class LocalPlayer implements NonPixelRenderer {
   }
 
   render(renderer: Renderer, scale: number) {
-    const size = scale * 0.6
+    const pos = this.getPosition()
+    const [canvasX, canvasY] = renderer.getCanvasPosFromPixelPos(pos[0], pos[1], scale)
 
-    const x = renderer.getCanvas().width / 2
-    const y = renderer.getCanvas().height / 2
+    const size = scale * 0.6
 
     const ctx = renderer.getContext()
     ctx.fillStyle = PLAYER_COLOURS[this.colourId]
-    ctx.fillRect(x - size/2, y - size/2, size, size)
+    ctx.fillRect(canvasX - (size/2), canvasY - (size/2), size, size)
   }
 }

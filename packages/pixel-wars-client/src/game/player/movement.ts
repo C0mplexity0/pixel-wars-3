@@ -85,9 +85,12 @@ export default class MovementHandler {
     }
 
     const newPos = [
-      oldPos[0] + Math.cos(actualDirection) * .1,
-      oldPos[1] + Math.sin(actualDirection) * .1
+      oldPos[0] + Math.cos(actualDirection) * .05,
+      oldPos[1] + Math.sin(actualDirection) * .05
     ]
+
+    newPos[0] = Math.floor(newPos[0] * 1000) / 1000
+    newPos[1] = Math.floor(newPos[1] * 1000) / 1000
 
     this.player.setPosition(newPos[0], newPos[1])
   }
