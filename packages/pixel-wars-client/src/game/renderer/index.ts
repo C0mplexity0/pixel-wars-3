@@ -112,11 +112,16 @@ export default class Renderer {
     }
   }
 
-  getCanvasPosFromPixelPos(x: number, y: number, scale: number) {
+  getCanvasPosFromPixelPos(x: number, y: number, scale: number, fromCentre: boolean=false) {
     const [playerX, playerY] = this.client.getPlayer().getPosition()
 
-    const canvasX = ((x - playerX) * scale) + this.canvas.width / 2
-    const canvasY = ((y - playerY) * scale) + this.canvas.height / 2
+    let canvasX = ((x - playerX) * scale) + this.canvas.width / 2
+    let canvasY = ((y - playerY) * scale) + this.canvas.height / 2
+
+    if (!fromCentre) {
+      canvasX += 0.5 * scale
+      canvasY += 0.5 * scale
+    }
 
     return [Math.floor(canvasX), Math.floor(canvasY)]
   }

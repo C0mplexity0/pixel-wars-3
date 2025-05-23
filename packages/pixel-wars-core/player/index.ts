@@ -64,7 +64,7 @@ export default class Player {
   constructor(core: PixelWarsCore) {
     this.core = core
 
-    this.position = [0, 0]
+    this.position = [0.5, 0.5]
     this.colourId = Math.floor(Math.random() * PLAYER_COLOURS.length)
 
     this.world = core.getDefaultWorld()
@@ -97,7 +97,7 @@ export default class Player {
 
     this.world = world
    
-    this.setPosition(0, 0)
+    this.setPosition(0.5, 0.5)
 
     const event = new WorldChangeEvent(world)
     this.onWorldChangeEvent.fire(event)    

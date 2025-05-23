@@ -29,10 +29,10 @@ export default class MovementHandler {
 
   #playerTouchingPixel(x: number, y: number) {
     const checkPoints = [
-      [x+0.2, y+0.2],
-      [x+0.8, y+0.2],
-      [x+0.2, y+0.8],
-      [x+0.8, y+0.8],
+      [x-0.3, y-0.3],
+      [x+0.3, y-0.3],
+      [x-0.3, y+0.3],
+      [x+0.3, y+0.3],
     ]
 
     for (const point of checkPoints) {
@@ -46,7 +46,7 @@ export default class MovementHandler {
   }
 
   update() {
-    const MOVEMENT_SPEED = 5
+    const MOVEMENT_SPEED = 7
 
     const deltaTime = (Date.now() - this.lastMovement)/1000
     this.lastMovement = Date.now()
@@ -116,8 +116,11 @@ export default class MovementHandler {
     newPos[0] = Math.floor(newPos[0] * 1000) / 1000
     newPos[1] = Math.floor(newPos[1] * 1000) / 1000
 
-    if (this.#playerTouchingPixel(newPos[0], newPos[1])) {
-      return
+    if (this.#playerTouchingPixel(newPos[0], oldPos[1])) {
+      newPos[0] = oldPos[0]
+    }
+    if (this.#playerTouchingPixel(oldPos[0], newPos[1])) {
+      newPos[1] = oldPos[1]
     }
 
     this.player.setPosition(newPos[0], newPos[1])

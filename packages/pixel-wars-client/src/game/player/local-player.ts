@@ -39,7 +39,7 @@ export default class LocalPlayer implements NonPixelRenderer {
   constructor(client: PixelWarsClient) {
     this.colourId = 0
     
-    this.position = [0, 0]
+    this.position = [0.5, 0.5]
 
     this.pixelInventory = []
     this.selectedPixel = 0
@@ -124,9 +124,9 @@ export default class LocalPlayer implements NonPixelRenderer {
 
   render(renderer: Renderer, scale: number) {
     const pos = this.getPosition()
-    const [canvasX, canvasY] = renderer.getCanvasPosFromPixelPos(pos[0], pos[1], scale)
+    const [canvasX, canvasY] = renderer.getCanvasPosFromPixelPos(pos[0], pos[1], scale, true)
 
-    const size = scale * 0.6
+    const size = Math.floor(scale * 0.6)
 
     const ctx = renderer.getContext()
     ctx.fillStyle = PLAYER_COLOURS[this.colourId]

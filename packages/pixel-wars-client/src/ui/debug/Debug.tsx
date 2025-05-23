@@ -5,7 +5,7 @@ import WorldUtils from "pixel-wars-core/world/utils"
 
 export default function Debug() {
   const [fps, setFps] = useState(0)
-  const [coordinates, setCoordinates] = useState([0, 0])
+  const [coordinates, setCoordinates] = useState([0.5, 0.5])
 
   const chunkCoordinates = WorldUtils.getChunkFromPixelPos(coordinates[0], coordinates[1])
   
