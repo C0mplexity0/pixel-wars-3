@@ -49,26 +49,46 @@ export default class MovementHandler {
       xChange++
     }
 
-    const oldPos = this.player.getPosition()
-    const newPos = [oldPos[0] + xChange, oldPos[1] + yChange]
-
-    const newPosOmitXChange = [oldPos[0], oldPos[1] + yChange]
-      const newPosOmitYChange = [oldPos[0] + xChange, oldPos[1]]
-
-      const canWalkWhenOmitXChange = this.canWalkOnPixel(newPosOmitXChange[0], newPosOmitXChange[1])
-      const canWalkWhenOmitYChange = this.canWalkOnPixel(newPosOmitYChange[0], newPosOmitYChange[1])
-
-    if (this.canWalkOnPixel(newPos[0], newPos[1]) && (canWalkWhenOmitXChange || canWalkWhenOmitYChange)) {
-      this.player.setPosition(newPos[0], newPos[1])
-      this.lastMovement = Date.now()
-    } else {
-      if (canWalkWhenOmitYChange) {
-        this.player.setPosition(newPosOmitYChange[0], newPosOmitYChange[1])
-        this.lastMovement = Date.now()
-      } else if (canWalkWhenOmitXChange) {
-        this.player.setPosition(newPosOmitXChange[0], newPosOmitXChange[1])
-        this.lastMovement = Date.now()
-      }
+    if (xChange === 0 && yChange === 0) {
+      return
     }
+
+    const oldPos = this.player.getPosition()
+    
+    let xDirection
+    let yDirection
+
+    if (xChange > 0) {
+      xDirection = 0
+    } else if (xChange < 0) {
+      xDirection = Math.PI
+    }
+
+    if (yChange > 0) {
+      yDirection = Math.PI / 2
+    } else if (yChange < 0) {
+      yDirection = Math.PI * 3 / 2
+    }
+
+    let actualDirection = 0
+
+    if (xDirection !== undefined && yDirection !== undefined) {
+      actualDirection = Math.atan2(yChange, xChange)
+    } else if (xDirection !== undefined) {
+      actualDirection = xDirection
+    } else if (yDirection !== undefined) {
+      actualDirection = yDirection
+    }
+
+    if (actualDirection < 0) {
+      actualDirection += Math.PI * 2
+    }
+
+    const newPos = [
+      oldPos[0] + Math.cos(actualDirection) * .1,
+      oldPos[1] + Math.sin(actualDirection) * .1
+    ]
+
+    this.player.setPosition(newPos[0], newPos[1])
   }
 }

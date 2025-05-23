@@ -172,7 +172,7 @@ export default class PixelWarsClient {
     for (let y=-VISIBLE_PIXEL_RADIUS;y<VISIBLE_PIXEL_RADIUS;y++) {
       const row = []
       for (let x=-VISIBLE_PIXEL_RADIUS;x<VISIBLE_PIXEL_RADIUS;x++) {
-        row.push(this.world.getPixel(centre[0] + x, centre[1] + y).typeId)
+        row.push(this.world.getPixel(Math.floor(centre[0] + x), Math.floor(centre[1] + y)).typeId)
       }
       region.push(row)
     }

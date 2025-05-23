@@ -37,8 +37,8 @@ export default class BuildingHandler implements NonPixelRenderer {
       }
 
       const playerPos = game.getPlayer().getPosition()
-      const x = playerPos[0] + editPos[0]
-      const y = playerPos[1] + editPos[1]
+      const x = Math.floor(playerPos[0] + editPos[0])
+      const y = Math.floor(playerPos[1] + editPos[1])
 
       const pixelType = game.getClientWorld().getPixel(x, y)
 
@@ -83,7 +83,8 @@ export default class BuildingHandler implements NonPixelRenderer {
       return
     }
 
-    const playerPos = this.game.getPlayer().getPosition()
+    let playerPos = this.game.getPlayer().getPosition()
+    playerPos = [Math.floor(playerPos[0]), Math.floor(playerPos[1])]
 
     this.#renderPixelBuildableIndicator(renderer, playerPos[0]-1, playerPos[1], -1, 0, scale)
     this.#renderPixelBuildableIndicator(renderer, playerPos[0]+1, playerPos[1], 1, 0, scale)
