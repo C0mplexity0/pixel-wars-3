@@ -22,10 +22,34 @@ export default class MovementHandler {
     return pixel.playerCanWalk
   }
 
-  update() {
-    if (Date.now() - this.lastMovement < 80) {
-      return
+  #pointTouchingPixel(x: number, y: number) {
+    const pixel = this.game.getClientWorld().getPixel(x, y)
+    return !pixel.playerCanWalk
+  }
+
+  #playerTouchingPixel(x: number, y: number) {
+    const checkPoints = [
+      [x+0.2, y+0.2],
+      [x+0.8, y+0.2],
+      [x+0.2, y+0.8],
+      [x+0.8, y+0.8],
+    ]
+
+    for (const point of checkPoints) {
+      const [pointX, pointY] = point
+      if (this.#pointTouchingPixel(pointX, pointY)) {
+        return true
+      }
     }
+
+    return false
+  }
+
+  update() {
+    const MOVEMENT_SPEED = 5
+
+    const deltaTime = (Date.now() - this.lastMovement)/1000
+    this.lastMovement = Date.now()
 
     let xChange = 0
     let yChange = 0
@@ -85,12 +109,16 @@ export default class MovementHandler {
     }
 
     const newPos = [
-      oldPos[0] + Math.cos(actualDirection) * .05,
-      oldPos[1] + Math.sin(actualDirection) * .05
+      oldPos[0] + Math.cos(actualDirection) * deltaTime * MOVEMENT_SPEED,
+      oldPos[1] + Math.sin(actualDirection) * deltaTime * MOVEMENT_SPEED
     ]
 
     newPos[0] = Math.floor(newPos[0] * 1000) / 1000
     newPos[1] = Math.floor(newPos[1] * 1000) / 1000
+
+    if (this.#playerTouchingPixel(newPos[0], newPos[1])) {
+      return
+    }
 
     this.player.setPosition(newPos[0], newPos[1])
   }

@@ -47,6 +47,8 @@ export default class ClientWorld {
   }
 
   getPixel(x: number, y: number) {
+    x = Math.floor(x)
+    y = Math.floor(y)
     const [chunkX, chunkY] = WorldUtils.getChunkFromPixelPos(x, y)
     const [xInChunk, yInChunk] = WorldUtils.getPosInChunkFromPixelPos(x, y)
 
