@@ -62,7 +62,8 @@ export default class ConnectionHandler {
 
     this.app.use(cors())
 
-    this.app.get("/pixel-wars/server-info", (_req, res) => {
+    this.app.get("/pixel-wars/server-info", (req, res) => {
+      server.getLogger().debug(`Pinged for server info (${req.ip})`)
       res.json({
         validPixelWarsServer: true
       })

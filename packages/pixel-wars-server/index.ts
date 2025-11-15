@@ -18,7 +18,7 @@ export default class PixelWarsServer {
   constructor(core: PixelWarsCore) {
     this.core = core
     this.logger = log4js.getLogger("pixel-wars-server")
-    this.logger.level = "info"
+    this.logger.level = "debug";
 
     const worlds = core.getWorlds()
 
@@ -51,7 +51,7 @@ export default class PixelWarsServer {
     return this.core
   }
 
-  start(port: number, ssl: { key: NonSharedBuffer, cert: NonSharedBuffer }) {
+  start(port: number, ssl: { key: Buffer<ArrayBuffer>, cert: Buffer<ArrayBuffer> }) {
     if (this.connection)
       this.connection.disconnect()
 
