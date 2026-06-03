@@ -17,7 +17,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "pixel-wars-core": "^3.0.0",
-    "pixel-wars-server": "^3.0.0"
+    "pixel-wars-core": "workspace:~",
+    "pixel-wars-server": "workspace:~"
   }
 }

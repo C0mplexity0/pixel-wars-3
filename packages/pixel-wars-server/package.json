@@ -11,8 +11,8 @@
     "@types/express": "^5.0.1",
     "express": "^5.1.0",
     "log4js": "^6.9.1",
-    "pixel-wars-core": "^3.0.0",
-    "pixel-wars-protocol": "^3.0.0",
+    "pixel-wars-core": "workspace:~",
+    "pixel-wars-protocol": "workspace:~",
     "socket.io": "^4.8.1"
   }
 }

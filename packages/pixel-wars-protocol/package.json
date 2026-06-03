@@ -6,7 +6,7 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "dependencies": {
-    "pixel-wars-core": "^3.0.0",
+    "pixel-wars-core": "workspace:~",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   }
